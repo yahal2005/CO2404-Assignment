@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:cinematic_insights/custom_widgets.dart';
+import 'package:cinematic_insights/Widgets/MovieSlider.dart';
+import 'package:cinematic_insights/models/movieClass.dart';
+import 'package:cinematic_insights/api/api.dart';
 
 class HomeScreen extends StatefulWidget 
 {
@@ -9,7 +11,19 @@ class HomeScreen extends StatefulWidget
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+
+
 class _HomeScreenState extends State<HomeScreen> {
+
+  late Future<List<Movie>> currentlyPlaying; 
+  
+  @override
+  void initState()
+  {
+    super.initState();
+    currentlyPlaying = Api().getCurrentlyPlaying();//calling the movies that are currently playing in the cinema
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -20,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Image.asset(
             "assets/logo.png",
             width: screenSize.width *0.8,
-            height: screenSize.height*0.2,
+            height: screenSize.height*0.3,
             fit: BoxFit.contain,
             filterQuality: FilterQuality.high,
           ), // Logo 
@@ -28,12 +42,12 @@ class _HomeScreenState extends State<HomeScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  ScrollableMovieListView(category: "What's on at the cinema?"),
-                  ScrollableMovieListView(category: "What are the best movies this year?"),
-                  ScrollableMovieListView(category: "What are the highest grossing movies of all time?"),
-                  ScrollableMovieListView(category: "Children-friendly movies"),
-                  ScrollableMovieListView(category: "What's on TV tonight?"),
-                  ScrollableMovieListView(category: "Watch-List"),
+                  MovieSlider(category: "What's on at the cinema?"),
+                  MovieSlider(category: "What are the best movies this year?"),
+                  MovieSlider(category: "What are the highest grossing movies of all time?"),
+                  MovieSlider(category: "Children-friendly movies"),
+                  MovieSlider(category: "What's on TV tonight?"),
+                  MovieSlider(category: "Watch-List"),
                 ],
               ),
             ),

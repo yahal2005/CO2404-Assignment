@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ScrollableMovieListView extends StatelessWidget
+class MovieSlider extends StatelessWidget
 {
-  const ScrollableMovieListView({super.key, required this.category});
+  const MovieSlider({super.key, required this.category});
 
   final String category;
   
@@ -26,7 +26,7 @@ class ScrollableMovieListView extends StatelessWidget
             Text(
               (category),
               style: GoogleFonts.aBeeZee(
-              fontSize: 25,
+              fontSize: 20,
               ),
             ),
             
@@ -43,13 +43,17 @@ class ScrollableMovieListView extends StatelessWidget
             itemCount: 10,
             itemBuilder:(context, index){
               return Padding(
-                padding: EdgeInsets.all(30),
+                padding: EdgeInsets.fromLTRB(
+                  30,
+                  15,
+                  30,
+                  15,
+                ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Container(
-                    color: Colors.amber,
-                    height: 0.25*screenSize.height,
-                    width: 0.2*screenSize.width,
+                    color: const Color.fromRGBO(255, 193, 7, 1),
+                    width: 125,
                   ),
                 ),
               );
