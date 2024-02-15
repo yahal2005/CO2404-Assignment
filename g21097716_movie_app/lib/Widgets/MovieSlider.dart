@@ -3,10 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 class MovieSlider extends StatelessWidget
 {
-  const MovieSlider({super.key, required this.category});
+  const MovieSlider({super.key, required this.category, required this.snapshot});
 
   final String category;
-  
+  final AsyncSnapshot snapshot;
 
   @override
   Widget build(BuildContext context)
@@ -51,9 +51,13 @@ class MovieSlider extends StatelessWidget
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    color: const Color.fromRGBO(255, 193, 7, 1),
+                  child: SizedBox(
                     width: 125,
+                    child: Image.network(
+                      filterQuality: FilterQuality.high,
+                      fit: BoxFit.cover,
+                      'https://image.tmdb.org/t/p/w500${snapshot.data[index].posterPath}'
+                    ),
                   ),
                 ),
               );

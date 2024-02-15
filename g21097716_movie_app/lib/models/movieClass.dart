@@ -5,7 +5,7 @@ class Movie
   String originalTitle;
   String overview;
   String posterPath;
-  List<int> genreID = [];
+  List<dynamic> genreID = [];
   String releaseDate;
   double voteAverage;
 
