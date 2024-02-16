@@ -1,6 +1,7 @@
 import 'package:cinematic_insights/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'dart:async';
 
 class SplashScreen extends StatefulWidget
 {
@@ -19,39 +20,33 @@ class _SplashScreenState extends State<SplashScreen>
   {
     super.initState();
     _controller = VideoPlayerController.asset('assets/splash_screen.mp4')
-      /*..initialize().then(( ){
-        setState((){});
-      })*/
-      ..setVolume(0.0);
-    _playVideo();
+      ..initialize().then((_) {
+        // Ensure the first frame is shown after the video is initialized
+        setState(() {});
+        _playVideo();
+      });
   }
 
   void _playVideo() async
   {
     _controller.play();
 
-    await Future.delayed(const Duration(seconds: 15));
+    Timer(Duration(seconds: 15),()
+    {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
 
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => HomeScreen()),
-    );
+    });
   
   }
-
-  @override
-  void dispose()
-  {
-    _controller.dispose();
-    super.dispose();
-  }
-
 
 
   @override
   Widget build(BuildContext context)
   {
     return Scaffold(
-      backgroundColor: Colors.black,
+      //backgroundColor: Colors.black,
       body: Center(
         child: _controller.value.isInitialized
             ? AspectRatio(
@@ -65,4 +60,12 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
   }
+
+    @override
+  void dispose()
+  {
+    _controller.dispose();
+    super.dispose();
+  }
+
 }
