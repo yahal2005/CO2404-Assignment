@@ -36,16 +36,65 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
 
     final Size screenSize = MediaQuery.of(context).size;
-    return Scaffold(
-      body: Column(
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        body: Column(
         children: [
           Image.asset(
             "assets/logo.png",
-            width: screenSize.width *0.8,
-            height: screenSize.height*0.3,
+            width: screenSize.width *0.78,
+            height: screenSize.height*0.28,
             fit: BoxFit.contain,
             filterQuality: FilterQuality.high,
-          ), // Logo 
+          ),
+          //Logo
+          Padding(
+              padding: EdgeInsets.fromLTRB(
+                0.125* screenSize.width,
+                0.03* screenSize.height,
+                0.125* screenSize.width,
+                0.03* screenSize.height
+              ),
+              child: Container(
+                height: 0.05*screenSize.height,
+                width : 0.5*screenSize.width,
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search...',
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (value) {
+                  // Handle search input changes
+                  },
+                ),
+              ),
+            ),
+          //Search Bar
+          SizedBox(
+            height : screenSize.height*0.05,
+            width : screenSize.width *1,
+            child: const TabBar(
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.grey,
+          
+              tabs:[
+                Tab(text: "Movie"),
+                Tab(text: "TV"),
+                Tab(text: "Watch-List")
+              ],
+          
+              indicator: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: Color.fromRGBO(253, 203, 74, 1.0),
+                    width: 4.0,
+                  )
+                )
+              ),
+            ),
+          ),           
+          //The Tab Bar
           Expanded(
             child: SingleChildScrollView(
               child: Column(
@@ -70,6 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       }
                     ),
                   ),
+                  //What's on Cinema?
                   SizedBox(
                     child: FutureBuilder(
                       future: trendingYr,
@@ -90,6 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       }
                     ),
                   ),
+                  // What are the best movies this year?
                   SizedBox(
                     child: FutureBuilder(
                       future: highestGrossing,
@@ -110,6 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       }
                     ),
                   ),
+                  //  What are the highest grossing movies of all time?
                   SizedBox(
                     child: FutureBuilder(
                       future: childrenFriendly,
@@ -130,6 +182,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       }
                     ),
                   ),
+                  // Children-friendly movies
                   SizedBox(
                     child: FutureBuilder(
                       future: onTv,
@@ -150,18 +203,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       }
                     ),
                   ),
-                  /*MovieSlider(category: "What's on at the cinema?"),
-                  MovieSlider(category: "What are the best movies this year?"),
-                  MovieSlider(category: "What are the highest grossing movies of all time?"),
-                  MovieSlider(category: "Children-friendly movies"),
-                  MovieSlider(category: "What's on TV tonight?"),
-                  MovieSlider(category: "Watch-List"),*/
+                  // What's on TV tonight?
+
+
+                  //MovieSlider(category: "Watch-List"),
                 ],
               ),
             ),
           ),
         ],
       ),
+
+      ),
+      
     );
   }
 }

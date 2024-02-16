@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  video_player: ^2.2.13
 
 
   cupertino_icons: ^1.0.2
@@ -23,6 +24,12 @@ dev_dependencies:
 
 
   flutter_lints: ^2.0.0
+  flutter_native_splash: ^2.0.5
+
+flutter_native_splash:
+  color: "#000000"
+
+
 
 
 flutter:
@@ -33,3 +40,4 @@ flutter:
   assets:
    - assets/
 
+ 

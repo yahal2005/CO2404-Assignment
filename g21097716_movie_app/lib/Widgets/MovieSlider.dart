@@ -19,7 +19,7 @@ class MovieSlider extends StatelessWidget
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 32),
+        const SizedBox(height: 30),
         Row(
           children:[
             SizedBox(width: screenSize.width*0.02),
@@ -27,15 +27,17 @@ class MovieSlider extends StatelessWidget
               (category),
               style: GoogleFonts.aBeeZee(
               fontSize: 20,
+              decoration: TextDecoration.underline,
+              color: Color.fromRGBO(253, 203, 74, 1.0),
               ),
             ),
             
           ],
         ),
 
-        const SizedBox(height: 32),
+        const SizedBox(height: 20),
         SizedBox(
-          height: 0.25*screenSize.height, 
+          height: 0.2*screenSize.height, 
           width: double.infinity,
           child:ListView.builder(
             scrollDirection: Axis.horizontal,
@@ -45,9 +47,9 @@ class MovieSlider extends StatelessWidget
               return Padding(
                 padding: EdgeInsets.fromLTRB(
                   30,
-                  15,
+                  0,
                   30,
-                  15,
+                  0,
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),

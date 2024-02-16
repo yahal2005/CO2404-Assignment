@@ -1,6 +1,7 @@
+import 'package:cinematic_insights/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cinematic_insights/colors.dart';
-import 'package:cinematic_insights/home_screen.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colours.scaffoldBgColor,
         useMaterial3: true,
       ),
-      home: const HomeScreen(),
+      home: const SplashScreen(),
     );
   }
 }
