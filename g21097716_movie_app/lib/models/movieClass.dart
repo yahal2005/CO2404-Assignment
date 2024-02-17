@@ -1,3 +1,5 @@
+
+
 class Movie
 {
   String title;
@@ -5,7 +7,7 @@ class Movie
   String originalTitle;
   String overview;
   String posterPath;
-  List<dynamic> genreID = [];
+  int movieID;
   String releaseDate;
   double voteAverage;
 
@@ -15,7 +17,7 @@ class Movie
     required this.originalTitle,
     required this.overview,
     required this.posterPath,
-    required this.genreID,
+    required this.movieID,
     required this.releaseDate,
     required this.voteAverage,
   });
@@ -23,14 +25,14 @@ class Movie
   factory Movie.fromJson(Map<String,dynamic>json)
   {
     return Movie(
-      title: json["title"] ?? "Title not available",
-      backDropPath: json["backdrop_path"],
-      originalTitle: json["original_title"],
-      overview: json["overview"],
-      posterPath: json["poster_path"],
-      genreID: json["genre_ids"],
-      releaseDate: json["release_date"],
-      voteAverage: json["vote_average"],
+      title: json["title"] ?? json["name"] ?? "Title not available",
+      backDropPath: json["backdrop_path"] ?? "Image not available",
+      originalTitle: json["original_title"] ?? json["original_name"] ??"Original title not available",
+      overview: json["overview"] ?? "OverView not available",
+      posterPath: json["poster_path"] ?? "Image not available",
+      movieID: json["id"] ,
+      releaseDate: json["release_date"] ?? json["first_air_date"] ??"Release date not available",
+      voteAverage: json["vote_average"] ?? 0.0,
     );
   }
 

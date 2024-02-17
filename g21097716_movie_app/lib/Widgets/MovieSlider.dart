@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cinematic_insights/screens/details_screen.dart';
 
 class MovieSlider extends StatelessWidget
 {
@@ -43,22 +44,28 @@ class MovieSlider extends StatelessWidget
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
             itemCount: 10,
-            itemBuilder:(context, index){
-              return Padding(
-                padding: EdgeInsets.fromLTRB(
-                  30,
-                  0,
-                  30,
-                  0,
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: SizedBox(
-                    width: 125,
-                    child: Image.network(
-                      filterQuality: FilterQuality.high,
-                      fit: BoxFit.cover,
-                      'https://image.tmdb.org/t/p/w500${snapshot.data[index].posterPath}'
+            itemBuilder:(context, itemIndex){
+              return GestureDetector(
+                onTap:()
+                {
+                  Navigator.push(context, MaterialPageRoute(builder: ((context) => DetailsScreen(movie: snapshot.data[itemIndex]))));
+                },
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    30,
+                    0,
+                    30,
+                    0,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: SizedBox(
+                      width: 125,
+                      child: Image.network(
+                        'https://image.tmdb.org/t/p/w500${snapshot.data[itemIndex].posterPath}',
+                        filterQuality: FilterQuality.high,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),

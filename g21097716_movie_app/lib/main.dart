@@ -1,4 +1,4 @@
-import 'package:cinematic_insights/splash_screen.dart';
+import 'package:cinematic_insights/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cinematic_insights/colors.dart';
 
