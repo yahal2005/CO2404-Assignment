@@ -3,14 +3,55 @@ import 'package:cinematic_insights/Widgets/back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:cinematic_insights/models/movieClass.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 //import 'package:cinematic_insights/api/api.dart';
 
-class DetailsScreen extends StatelessWidget
+
+
+
+class DetailsScreen extends StatelessWidget 
 {
-  const DetailsScreen({super.key, required this.movie});
+  DetailsScreen({super.key, required this.movie});
   final Movie movie;
+  
+  List<String> GetTheGenres()
+  {
+    final genreBox = Hive.box("GenreBox");
+    List<String> genreIdsInMovie= movie.genreIds.map((dynamic value) => value.toString()).toList();
+    List<String> genreNames = [];
+    var keys = genreBox.keys.toList();
+    print(genreBox.values);
+    var values = genreBox.values.toList();
+    print(values);
+    print(genreIdsInMovie);
+
+     for(int count = 0; count < genreIdsInMovie.length; count++)
+    {
+      bool found = false;
+      int index = 0;
+      while (found == false && index < genreBox.length )
+      {
+        if (genreIdsInMovie[count] == keys[index])
+        {
+          genreNames.add(values[index]);
+          found = true;
+        }
+        index++;
+      }
+
+    }
+
+    return genreNames;
+
+
+  }
+
+  
+
+
+
   @override
-  Widget build(BuildContext context)
+  Widget build(BuildContext context) 
   {
     final Size screenSize = MediaQuery.of(context).size;
 
@@ -28,7 +69,7 @@ class DetailsScreen extends StatelessWidget
               SliverList(
                 delegate: SliverChildListDelegate([
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(72, 0, 0, 72),
+                    padding: const EdgeInsets.fromLTRB(72, 0, 72, 72),
                     child: Column(
                       children: [
                         Align(
@@ -46,6 +87,7 @@ class DetailsScreen extends StatelessWidget
                         //Movie Title
                         const SizedBox(height: 30),
                         SizedBox(
+                          
                           height: screenSize.height * 0.4,
                           child: ClipRRect(
                             borderRadius: const BorderRadius.only(
@@ -61,6 +103,20 @@ class DetailsScreen extends StatelessWidget
                         ),
                         //Poster
                         const SizedBox(height: 20),
+                        
+                        SizedBox(
+                          height: 200,
+                          child: ListView.builder(
+                            itemCount: GetTheGenres().length,
+                            itemBuilder: (context,index)
+                            {
+                              String text = GetTheGenres()[index];
+                              return Text(text);
+                            },
+                          ),
+                        ),
+
+                        const SizedBox(height:20),
                         Align(
                           alignment:Alignment.centerLeft,
                           child: Text(
@@ -113,12 +169,15 @@ class DetailsScreen extends StatelessWidget
             left: 0,
             right: 0,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              //crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 72),
+                SizedBox(
+                  width: screenSize.width*0.75,
                   child: ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: ()
+                     {
+
+                     },
                     icon: Icon(
                       Icons.add,
                       color: Colours.scaffoldBgColor,
@@ -141,14 +200,12 @@ class DetailsScreen extends StatelessWidget
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
-                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                        EdgeInsets.symmetric(vertical: 16.0),
-                      ),
+                      
                     ),
                   ),
                 ),
                 Container(
-                  height: 40, 
+                  height: 20, 
                   color: Colors.black,
                 ),
               ],
@@ -162,35 +219,3 @@ class DetailsScreen extends StatelessWidget
 
 }
 
-
-
-/*FutureBuilder <List<String>>(
-                future: Api().getGenres(movie.movieID.toString()),
-                builder: (context, snapshot)
-                {
-                  List<String> MovieGenres = snapshot.data ?? [];
-                  return SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12) ,
-                      child: ListView.builder(
-                        physics: BouncingScrollPhysics(),
-                        scrollDirection: Axis.horizontal,
-                        itemCount: MovieGenres.length,
-                        itemBuilder: (context, index)
-                        {
-                          return Container(
-                            margin: EdgeInsets.only(right:10),
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: Color.fromRGBO(25, 25, 25, 1),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(MovieGenres[index])
-                          );
-                        }
-
-                      )
-                    ),
-                  );
-                }
-              ),*/
