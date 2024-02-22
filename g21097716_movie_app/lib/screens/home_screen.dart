@@ -4,9 +4,7 @@ import 'package:cinematic_insights/Widgets/MovieSlider.dart';
 import 'package:cinematic_insights/models/movieClass.dart';
 import 'package:cinematic_insights/api/api.dart';
 import 'package:google_fonts/google_fonts.dart';
-//import 'package:hive/hive.dart';
 //import 'package:cinematic_insights/screens/details_screen.dart';
-//import 'package:hive_flutter/adapters.dart';
 
 class HomeScreen extends StatefulWidget 
 {

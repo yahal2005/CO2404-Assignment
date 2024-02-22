@@ -1,54 +1,54 @@
 import 'package:cinematic_insights/colors.dart';
 import 'package:cinematic_insights/Widgets/back_button.dart';
+import 'package:cinematic_insights/models/genreClass.dart';
 import 'package:flutter/material.dart';
 import 'package:cinematic_insights/models/movieClass.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-//import 'package:cinematic_insights/api/api.dart';
+import 'package:cinematic_insights/api/api.dart';
 
 
 
-
-class DetailsScreen extends StatelessWidget 
+class DetailsScreen extends StatefulWidget 
 {
-  DetailsScreen({super.key, required this.movie});
+  const DetailsScreen({super.key, required this.movie});
   final Movie movie;
-  
-  List<String> GetTheGenres()
-  {
-    final genreBox = Hive.box("GenreBox");
-    List<String> genreIdsInMovie= movie.genreIds.map((dynamic value) => value.toString()).toList();
-    List<String> genreNames = [];
-    var keys = genreBox.keys.toList();
-    print(genreBox.values);
-    var values = genreBox.values.toList();
-    print(values);
-    print(genreIdsInMovie);
+  State<DetailsScreen> createState() => _DetailsScreenState();
+}
 
-     for(int count = 0; count < genreIdsInMovie.length; count++)
-    {
+
+class _DetailsScreenState extends State<DetailsScreen> 
+{
+  late Future<List<Genre>> AvailableGenre;
+  
+  void initState() {
+    super.initState();
+    initializeData(); 
+  }
+
+  Future<void> initializeData() async {
+    AvailableGenre = Api().getGenres();
+  }
+
+  Future<List<String>> GetTheGenres() async {
+    final List<String> genreNames = [];
+    final List<String> genreIdsInMovie = widget.movie.genreIds.map((value) => value.toString()).toList();
+    
+    List<Genre> genres = await AvailableGenre;
+    
+    for (int count = 0; count < genreIdsInMovie.length; count++) {
       bool found = false;
       int index = 0;
-      while (found == false && index < genreBox.length )
-      {
-        if (genreIdsInMovie[count] == keys[index])
-        {
-          genreNames.add(values[index]);
+      while (!found && index < genres.length) {
+        if (genreIdsInMovie[count] == genres[index].id.toString()) {
+          genreNames.add(genres[index].name);
           found = true;
         }
         index++;
       }
-
     }
-
+    
     return genreNames;
-
-
   }
-
-  
-
-
 
   @override
   Widget build(BuildContext context) 
@@ -75,7 +75,7 @@ class DetailsScreen extends StatelessWidget
                         Align(
                           alignment:Alignment.centerLeft,
                           child: Text(
-                            movie.title,
+                            widget.movie.title,
                             style: GoogleFonts.belleza(
                               fontSize: 35,
                               decoration: TextDecoration.underline,
@@ -95,7 +95,7 @@ class DetailsScreen extends StatelessWidget
                               bottomRight: Radius.circular(24),
                             ),
                             child: Image.network(
-                              'https://image.tmdb.org/t/p/w500${movie.posterPath}',
+                              'https://image.tmdb.org/t/p/w500${widget.movie.posterPath}',
                               filterQuality: FilterQuality.high,
                               fit: BoxFit.contain,
                             ),
@@ -105,13 +105,28 @@ class DetailsScreen extends StatelessWidget
                         const SizedBox(height: 20),
                         
                         SizedBox(
-                          height: 200,
-                          child: ListView.builder(
-                            itemCount: GetTheGenres().length,
-                            itemBuilder: (context,index)
-                            {
-                              String text = GetTheGenres()[index];
-                              return Text(text);
+                          child: FutureBuilder<List<String>>(
+                            future: GetTheGenres(),
+                            builder: (context, snapshot) {
+                              List<Widget> containers = snapshot.data!.map((text) {
+                                return Container(
+                                  margin: EdgeInsets.all(4),
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: Colors.grey),
+                                  ),
+                                  child: Text(
+                                    text,
+                                    style: TextStyle(fontSize: 15,  color: Colors.white),
+                                  ),
+                                );
+                              }).toList();
+
+                              return Wrap(
+                                alignment: WrapAlignment.start,
+                                children: containers,
+                              );
                             },
                           ),
                         ),
@@ -120,7 +135,7 @@ class DetailsScreen extends StatelessWidget
                         Align(
                           alignment:Alignment.centerLeft,
                           child: Text(
-                            movie.overview,
+                            widget.movie.overview,
                             style: GoogleFonts.roboto(
                               fontSize: 20,
                               fontWeight: FontWeight.w400,
@@ -136,7 +151,7 @@ class DetailsScreen extends StatelessWidget
                               color: Colours.ratingColor,
                             ),
                             Text(
-                              '  ${movie.voteAverage.toStringAsFixed(1)}/10',
+                              '  ${widget.movie.voteAverage.toStringAsFixed(1)}/10',
                               style: GoogleFonts.roboto(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -149,7 +164,7 @@ class DetailsScreen extends StatelessWidget
                         Align(
                           alignment:Alignment.centerLeft, 
                           child: Text(
-                            'Release date:  ${movie.releaseDate}',
+                            'Release date:  ${widget.movie.releaseDate}',
                             style: GoogleFonts.roboto(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -215,7 +230,7 @@ class DetailsScreen extends StatelessWidget
         ],
       ),
     );
+  
   }
-
 }
 

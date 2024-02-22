@@ -1,6 +1,6 @@
 import 'dart:convert';
+import 'package:cinematic_insights/models/genreClass.dart';
 import 'package:cinematic_insights/models/movieClass.dart';
-import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
 class Api
@@ -118,26 +118,17 @@ class Api
 
 
 
-  Future<Box<dynamic>> getGenres() async
+  Future<List<Genre>> getGenres() async
   {
-    final response = await http.get(Uri.parse((movieGenres)));
-    final genreBox = Hive.box('GenreBox');
+    final response = await http.get(Uri.parse(movieGenres));
     if(response.statusCode == 200)
     {
-      final decodedData = json.decode(response.body);
-
-      final List<dynamic> genres = decodedData['genres'];
-      genreBox.clear();
-      
-      for (var genre in genres) 
-      {
-        genreBox.put(genre['id'].toString(), genre['name'].toString());
-      }
-      return genreBox;
+      final decodedData = json.decode(response.body)['genres'] as List;
+      return decodedData.map((genre) => Genre.fromJson(genre)).toList();
     }
     else
     {
-      throw Exception(response);
+      throw Exception("Something happened");
     }
   }
  
