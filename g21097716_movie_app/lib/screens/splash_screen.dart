@@ -16,14 +16,16 @@ class _SplashScreenState extends State<SplashScreen>
   late VideoPlayerController _controller;
 
   @override
-  void initState()
-  {
+  void initState() {
     super.initState();
     _controller = VideoPlayerController.asset('assets/splash_screen.mp4')
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized
+      ..initialize().then((_) 
+      {
         setState(() {});
         _playVideo();
+      }).catchError((error)
+       {
+        print('Error initializing video player: $error');
       });
   }
 

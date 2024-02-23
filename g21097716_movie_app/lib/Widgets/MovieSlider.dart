@@ -1,3 +1,4 @@
+import 'package:cinematic_insights/screens/category_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cinematic_insights/screens/details_screen.dart';
@@ -79,7 +80,7 @@ class MovieSlider extends StatelessWidget
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     onPressed: (){
-
+                      Navigator.push(context,MaterialPageRoute(builder: (context) => CategoryScreen(category: category,)));
                     },
                     child: Icon(Icons.arrow_forward, color:  Colors.black,size: 35),
                     style: ElevatedButton.styleFrom(

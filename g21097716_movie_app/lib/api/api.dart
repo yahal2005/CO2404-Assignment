@@ -131,6 +131,50 @@ class Api
       throw Exception("Something happened");
     }
   }
+
+   Future<List<Movie>> fetchAllMoviesWithPage(int page, String category) async 
+   {
+  
+    String url = '';
+
+    // Customize the API endpoint based on the movie type
+    
+    if (category == "What's on at the cinema?") 
+    {
+      url = '$cinemaUrl&page=$page';
+
+    } 
+    else if (category == "What are the best movies this year?")
+    {
+      url = '$popularUrl&page=$page';
+
+    }
+    else if (category == "What are the highest grossing movies of all time?")
+    {
+      url = '$highestGrossingUrl&page=$page';
+
+    }
+    else if (category == "Children-friendly movies")
+    {
+      url = '$childrenFriendlyUrl&page=$page';
+    }
+    else if (category == "What's on TV tonight?")
+    {
+      url = '$tvUrl&page=$page';
+    }
+
+    final response = await http.get(Uri.parse(url),);
+    
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = jsonDecode(response.body);
+      List<dynamic> movies = data['results'] as List;
+      return (movies.map((json) => Movie.fromJson(json)).toList());
+    } else {
+      throw Exception('Something Happened');
+    }
+  }
+
  
 
 }
