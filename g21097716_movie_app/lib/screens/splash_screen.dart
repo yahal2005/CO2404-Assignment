@@ -1,4 +1,5 @@
-import 'package:cinematic_insights/screens/home_screen.dart';
+
+import 'package:cinematic_insights/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:async';
@@ -36,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen>
     Timer(Duration(seconds: 1),()
     {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => LoginScreen()),
       );
 
     });
