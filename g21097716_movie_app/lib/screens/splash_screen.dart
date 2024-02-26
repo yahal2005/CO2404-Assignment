@@ -1,6 +1,8 @@
 
+import 'package:cinematic_insights/screens/home_screen.dart';
 import 'package:cinematic_insights/screens/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:async';
 
@@ -34,14 +36,38 @@ class _SplashScreenState extends State<SplashScreen>
   {
     _controller.play();
 
-    Timer(Duration(seconds: 1),()
+    Timer(Duration(seconds: 3),()
     {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
-
-    });
+      if (checkLoggedIn() == true)
+      {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+      }
+      else
+      {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
+      }
+    }  
+   );
   
+  }
+
+  Future<bool> checkLoggedIn() async
+  {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool? Logged = prefs.getBool('Logged');
+    if (Logged == null || Logged == false )
+    {
+      return (false);
+    }
+    else
+    {
+      return (true);
+    }
+
   }
 
 

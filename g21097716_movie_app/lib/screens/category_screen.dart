@@ -155,13 +155,15 @@ class CategoryScreenState extends State<CategoryScreen>
                   return ListTile(
                     contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
                     leading: SizedBox(
-                      height: 150,
+                      //height: 300,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8.0),
-                        child: Image.network(
-                          'https://image.tmdb.org/t/p/w500${movie.posterPath}',
-                          width: 100,
-                          fit: BoxFit.cover,
+                        child: Container(
+                          width: screenSize.width*0.25,
+                          child: Image.network(
+                            'https://image.tmdb.org/t/p/w500${movie.posterPath}',
+                            fit: BoxFit.fill,
+                          ),
                         ),
                       ),
                     ),

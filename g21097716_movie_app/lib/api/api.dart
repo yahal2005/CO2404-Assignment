@@ -11,8 +11,9 @@ class Api
   static const highestGrossingUrl = 'https://api.themoviedb.org/3/discover/movie$apiKey&sort_by=revenue.desc';
   static const childrenFriendlyUrl = 'https://api.themoviedb.org/3/discover/movie$apiKey&adult=false&with_genres=16';
   static const tvUrl = 'https://api.themoviedb.org/3/tv/airing_today$apiKey';
-  static const movieDetail = 'https://api.themoviedb.org/3/movie/';
-  static const movieGenres = 'https://api.themoviedb.org/3/genre/movie/list$apiKey';
+  static const movieDetailUrl = 'https://api.themoviedb.org/3/movie/';
+  static const movieGenresUrl = 'https://api.themoviedb.org/3/genre/movie/list$apiKey';
+  static const searchUrl = 'https://api.themoviedb.org/3/search/multi$apiKey&query=';
 
 
 
@@ -103,7 +104,7 @@ class Api
   // }
 
   Future<Movie> getMovieDetails(String movieID) async {
-  final response = await http.get(Uri.parse('$movieDetail$movieID$apiKey'));
+  final response = await http.get(Uri.parse('$movieDetailUrl$movieID$apiKey'));
   if (response.statusCode == 200) {
     final decodedData = json.decode(response.body);
 
@@ -120,7 +121,7 @@ class Api
 
   Future<List<Genre>> getGenres() async
   {
-    final response = await http.get(Uri.parse(movieGenres));
+    final response = await http.get(Uri.parse(movieGenresUrl));
     if(response.statusCode == 200)
     {
       final decodedData = json.decode(response.body)['genres'] as List;
@@ -174,6 +175,28 @@ class Api
       throw Exception('Something Happened');
     }
   }
+
+
+  Future<List<Movie>> searchList(String search) async
+  {
+    var searchResponse = await http.get(Uri.parse('${searchUrl}${search}'));
+    if (searchResponse.statusCode == 200) {
+      Map<String, dynamic> data = jsonDecode(searchResponse.body);
+      List<dynamic> movies = data['results'] as List;
+
+      if (movies.length > 20)
+      {
+        movies.removeRange(20, movies.length);
+      }
+      print(movies[0]);
+      return (movies.map((json) => Movie.fromJson(json)).toList());
+
+    } else {
+      throw Exception('Details Not Found');
+    }
+
+  }
+
 
  
 

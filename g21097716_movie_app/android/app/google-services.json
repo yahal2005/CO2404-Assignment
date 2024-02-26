@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "445356305682",
+    "project_id": "cinematic-insights",
+    "storage_bucket": "cinematic-insights.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:445356305682:android:4cb57b8ae37c1c03fa17cb",
+        "android_client_info": {
+          "package_name": "com.example.g21097716_movie_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0lQ5nzA7vSJSDFZ_e6mZ4g-cL2Uc-pB0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

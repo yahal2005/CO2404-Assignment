@@ -1,9 +1,12 @@
 
+import 'package:cinematic_insights/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cinematic_insights/Widgets/MovieSlider.dart';
+import 'package:cinematic_insights/Widgets/customSearchBar.dart';
 import 'package:cinematic_insights/models/movieClass.dart';
 import 'package:cinematic_insights/api/api.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:cinematic_insights/screens/details_screen.dart';
 
 class HomeScreen extends StatefulWidget 
@@ -34,15 +37,60 @@ class _HomeScreenState extends State<HomeScreen> {
     highestGrossing = Api().getHighestGrossing();
     childrenFriendly = Api().getChildrenFriendly();
     onTv = Api().getOnTv();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('Logged', true);
+  }
+
+  Future<void > loggedOut(BuildContext context) async
+  {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('Logged', false);
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
   }
 
 
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
+
+    
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          leading: Builder( // Wrap with Builder
+            builder: (context) => IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            ),
+          ),
+        ),
+
+        drawer: Drawer(
+          width: screenSize.width*0.25,
+          child: Column(
+            children: 
+            [
+              SizedBox(height: screenSize.height*0.9),
+
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: ListTile(
+                  title: Text('Logout'),
+                  onTap: ()
+                  {
+                    loggedOut(context);
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
         body: Column(
           children: [
             Image.asset(
@@ -55,23 +103,11 @@ class _HomeScreenState extends State<HomeScreen> {
             Padding(
               padding: EdgeInsets.fromLTRB(
                 0.125 * screenSize.width,
-                0.03 * screenSize.height,
+                0,
                 0.125 * screenSize.width,
                 0.03 * screenSize.height,
               ),
-              child: Container(
-                height: 0.05 * screenSize.height,
-                width: 0.5 * screenSize.width,
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search...',
-                    border: OutlineInputBorder(),
-                  ),
-                  onChanged: (value) {
-                    // Handle search input changes
-                  },
-                ),
-              ),
+              child: const searchBar(),
             ),
             SizedBox(
               height: screenSize.height * 0.05,

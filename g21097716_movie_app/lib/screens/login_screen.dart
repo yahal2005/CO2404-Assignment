@@ -1,5 +1,6 @@
 import 'package:cinematic_insights/Widgets/customTextField.dart';
 import 'package:cinematic_insights/colors.dart';
+import 'package:cinematic_insights/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget
@@ -9,8 +10,12 @@ class LoginScreen extends StatelessWidget
   final userNameController = TextEditingController();
   final passwordController = TextEditingController();
 
-  void SignUserIn()
-  {}
+  void SignUserIn(BuildContext context)
+  {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => HomeScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context)
@@ -23,8 +28,6 @@ class LoginScreen extends StatelessWidget
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 30),
-
               Image.asset(
                 "assets/logo.png",
                 width: screenSize.width * 0.78,
@@ -34,7 +37,7 @@ class LoginScreen extends StatelessWidget
               ),
               //logo
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 25),
 
               const Text(
                 'Login',
@@ -45,7 +48,7 @@ class LoginScreen extends StatelessWidget
                 )
               ),
 
-              const SizedBox(height: 25),
+              const SizedBox(height: 20),
 
               const Text(
                 'Sign in to continue',
@@ -55,7 +58,7 @@ class LoginScreen extends StatelessWidget
                 )
               ),
 
-              const SizedBox(height: 45),
+              const SizedBox(height: 20),
 
               CustomTextField(
                 controller: userNameController,
@@ -76,10 +79,11 @@ class LoginScreen extends StatelessWidget
               const SizedBox(height: 20),
 
               GestureDetector(
-                onTap: SignUserIn,
+                onTap: () => SignUserIn(context),
                 child: Container(
-                  width: 330,
-                  padding: const EdgeInsets.all(25),
+                  height: 40,
+                  width: 250,
+                  padding: const EdgeInsets.all(10),
                   margin: const EdgeInsets.symmetric(horizontal: 25),
                   decoration: BoxDecoration(
                   color:const Color.fromRGBO(253, 203, 74, 1.0),
@@ -92,8 +96,7 @@ class LoginScreen extends StatelessWidget
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
-                      ),
-                    ),
+                      )),
                   )
                 ),
               ),
