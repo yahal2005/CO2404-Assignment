@@ -29,7 +29,7 @@ class Movie
       backDropPath: json["backdrop_path"] ?? "Image not available",
       originalTitle:json["original_title"] ?? json["original_name"] ?? "Original title not available",
       overview: json["overview"] ?? "OverView not available",
-      posterPath: json["poster_path"] ?? "Image not available",
+      posterPath: json["poster_path"] ?? json["backdrop_path"],
       movieID: json["id"],
       genreIds: json["genre_ids"] ?? "",
       releaseDate: json["release_date"] ?? json["first_air_date"] ?? "Release date not available",

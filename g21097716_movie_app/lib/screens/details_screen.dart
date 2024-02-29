@@ -108,25 +108,32 @@ class _DetailsScreenState extends State<DetailsScreen>
                           child: FutureBuilder<List<String>>(
                             future: GetTheGenres(),
                             builder: (context, snapshot) {
-                              List<Widget> containers = snapshot.data!.map((text) {
-                                return Container(
-                                  margin: EdgeInsets.all(4),
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: Colors.grey),
-                                  ),
-                                  child: Text(
-                                    text,
-                                    style: TextStyle(fontSize: 15,  color: Colors.white),
-                                  ),
-                                );
-                              }).toList();
+                              if (snapshot.data == null)
+                              {
+                                return CircularProgressIndicator();
+                              }
+                              else
+                              {
+                                List<Widget> containers = snapshot.data!.map((text) {
+                                  return Container(
+                                    margin: EdgeInsets.all(4),
+                                    padding: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(color: Colors.grey),
+                                    ),
+                                    child: Text(
+                                      text,
+                                      style: TextStyle(fontSize: 15,  color: Colors.white),
+                                    ),
+                                  );
+                                }).toList();
 
-                              return Wrap(
-                                alignment: WrapAlignment.start,
-                                children: containers,
-                              );
+                                return Wrap(
+                                  alignment: WrapAlignment.start,
+                                  children: containers,
+                                );
+                              }
                             },
                           ),
                         ),

@@ -66,22 +66,23 @@ class searchBarState extends State<searchBar>
               {
                 if (snapshot.connectionState == ConnectionState.done)
                 {
-                  searchResult = snapshot.data!;
                   if (snapshot.data == null)
                   {
                     return Container(
+                      margin: const EdgeInsets.only(top: 16),
                       height: screenSize.height*0.5,
-                      child:Text("No results found"),
+                      child: const Text("No results found"),
                     );
                   }
                   else
                   {
+                    searchResult = snapshot.data!;
                     return Container(
-                      height: screenSize.height*0.5,
+                      height: screenSize.height*0.5305,
                       child: ListView.builder(
                         itemCount: searchResult.length,
                         scrollDirection: Axis.vertical,
-                        physics: BouncingScrollPhysics(),
+                        physics: const BouncingScrollPhysics(),
                         itemBuilder: (context,index)
                         {
                           return GestureDetector(
@@ -90,10 +91,10 @@ class searchBarState extends State<searchBar>
                               Navigator.push(context, MaterialPageRoute(builder: ((context) => DetailsScreen(movie: searchResult[index]))));
                             },
                             child: Container(
-                              margin: EdgeInsets.only(top: 4, bottom: 4),
-                              height: 100,
+                              margin: const EdgeInsets.only(top: 8, bottom: 8),
+                              height: 150,
                               width: screenSize.width,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 color: Colors.black,
                                 borderRadius: BorderRadius.all(Radius.circular(10)),
 
@@ -101,8 +102,7 @@ class searchBarState extends State<searchBar>
                               child: Row(
                                 children: [
                                   Container(
-                                    width: screenSize.width * 0.4,
-
+                                    width: 125,
                                     decoration: BoxDecoration(
                                       borderRadius: const BorderRadius.all(Radius.circular(10)),
                                       image: DecorationImage(
@@ -114,7 +114,7 @@ class searchBarState extends State<searchBar>
                                     ),
                                   ),
 
-                                  SizedBox(width: 20) ,   
+                                  const SizedBox(width: 20) ,   
 
                                   Padding(
                                     padding: const EdgeInsets.all(8.0) ,
@@ -122,8 +122,26 @@ class searchBarState extends State<searchBar>
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Container(),
-                                          Container(),
+                                          Container(
+                                            width: screenSize.width*0.4,
+                                            height: 85,
+                                            child : Text("${searchResult[index].overview}")
+                                          ),
+                                          Container(
+                                            child: Center(
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: [
+                                                  const Icon( Icons.star,
+                                                    color: Colors.amber,
+                                                    size: 20,
+                                                  ),
+                                                  SizedBox(width: 5),
+                                                  Text("${searchResult[index].voteAverage}/10")
+                                                ],
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       )
 
@@ -142,7 +160,7 @@ class searchBarState extends State<searchBar>
                 }
                 else
                 {
-                  return Center(child: CircularProgressIndicator(color: Colors.amber),);
+                  return const Center(child: CircularProgressIndicator(color: Colors.amber),);
                 }
               },
             )

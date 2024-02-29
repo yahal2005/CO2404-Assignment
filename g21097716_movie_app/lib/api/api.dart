@@ -137,8 +137,6 @@ class Api
    {
   
     String url = '';
-
-    // Customize the API endpoint based on the movie type
     
     if (category == "What's on at the cinema?") 
     {
@@ -188,7 +186,6 @@ class Api
       {
         movies.removeRange(20, movies.length);
       }
-      print(movies[0]);
       return (movies.map((json) => Movie.fromJson(json)).toList());
 
     } else {
@@ -196,8 +193,4 @@ class Api
     }
 
   }
-
-
- 
-
 }
