@@ -13,7 +13,7 @@ class Api
   static const tvUrl = 'https://api.themoviedb.org/3/tv/airing_today$apiKey';
   static const movieDetailUrl = 'https://api.themoviedb.org/3/movie/';
   static const movieGenresUrl = 'https://api.themoviedb.org/3/genre/movie/list$apiKey';
-  static const searchUrl = 'https://api.themoviedb.org/3/search/multi$apiKey&query=';
+  static const searchUrl = 'https://api.themoviedb.org/3/search/multi$apiKey';
 
 
 
@@ -177,16 +177,20 @@ class Api
 
   Future<List<Movie>> searchList(String search) async
   {
-    var searchResponse = await http.get(Uri.parse('${searchUrl}${search}'));
+    //print("yo");
+    var searchResponse = await http.get(Uri.parse('${searchUrl}&query=${search}'));
     if (searchResponse.statusCode == 200) {
       Map<String, dynamic> data = jsonDecode(searchResponse.body);
       List<dynamic> movies = data['results'] as List;
+      List<Movie> searchResults = [];
 
       if (movies.length > 20)
       {
         movies.removeRange(20, movies.length);
       }
-      return (movies.map((json) => Movie.fromJson(json)).toList());
+      //print(searchResponse.body);
+      searchResults = movies.map((json) => Movie.fromJson(json)).toList();
+      return (searchResults);
 
     } else {
       throw Exception('Details Not Found');

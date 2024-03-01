@@ -36,9 +36,11 @@ class _SplashScreenState extends State<SplashScreen>
   {
     _controller.play();
 
+    bool isLoggedIn = await getBoolcheckLoggedIn();
+
     Timer(Duration(seconds: 3),()
     {
-      if (checkLoggedIn() == true)
+      if (isLoggedIn == true)
       {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -55,18 +57,12 @@ class _SplashScreenState extends State<SplashScreen>
   
   }
 
-  Future<bool> checkLoggedIn() async
+  getBoolcheckLoggedIn() async
   {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final bool? Logged = prefs.getBool('Logged');
-    if (Logged == null || Logged == false )
-    {
-      return (false);
-    }
-    else
-    {
-      return (true);
-    }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool Logged = prefs.getBool('Logged') ?? false;
+    print(Logged);
+    return (Logged);
 
   }
 

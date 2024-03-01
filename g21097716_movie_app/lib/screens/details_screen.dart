@@ -1,6 +1,7 @@
 import 'package:cinematic_insights/colors.dart';
 import 'package:cinematic_insights/Widgets/back_button.dart';
 import 'package:cinematic_insights/models/genreClass.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:cinematic_insights/models/movieClass.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -48,6 +49,15 @@ class _DetailsScreenState extends State<DetailsScreen>
     }
     
     return genreNames;
+  }
+
+  Future addToWatchList(int Id) async
+  {
+    await FirebaseFirestore.instance.collection('MyList').add(
+      {
+        'ID': Id.toString(),
+      }
+    );
   }
 
   @override
@@ -198,9 +208,9 @@ class _DetailsScreenState extends State<DetailsScreen>
                   child: ElevatedButton.icon(
                     onPressed: ()
                      {
-
+                      addToWatchList(widget.movie.movieID);
                      },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.add,
                       color: Colours.scaffoldBgColor,
                       size: 25,

@@ -1,19 +1,67 @@
 import 'package:cinematic_insights/Widgets/customTextField.dart';
 import 'package:cinematic_insights/colors.dart';
 import 'package:cinematic_insights/screens/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatelessWidget
+class LoginScreen extends StatefulWidget
 {
   LoginScreen({super.key});
 
-  final userNameController = TextEditingController();
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final emailController = TextEditingController();
+
   final passwordController = TextEditingController();
 
-  void SignUserIn(BuildContext context)
+  void SignUserIn(BuildContext context) async
   {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => HomeScreen()),
+    showDialog(
+      context: context,
+      builder: (context)
+      {
+        return const Center(
+          child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.amber)),
+        );
+      }
+    );
+    try{
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text, 
+        password: passwordController.text,
+      );
+      Navigator.pop(context);
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+    } 
+    on FirebaseAuthException catch(error)
+    {
+      Navigator.pop(context);
+      if(error.code == 'user-not-found')
+      {
+        errorMessage(context,"Incorrect Email");
+      }
+      else if(error.code == 'wrong-password')
+      {
+        errorMessage(context,"Incorrect Password");
+      }
+    }
+  }
+
+  void errorMessage (BuildContext context, String errorText)
+  {
+    showDialog(
+      context: context, 
+      builder: (context)
+      {
+        return AlertDialog(
+          title: Text(errorText),
+        );
+      },
     );
   }
 
@@ -61,8 +109,8 @@ class LoginScreen extends StatelessWidget
               const SizedBox(height: 20),
 
               CustomTextField(
-                controller: userNameController,
-                hintText: "Username",
+                controller: emailController,
+                hintText: "Email",
                 obscureText: false,
               ),
               //Text Field to enter the username
