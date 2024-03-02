@@ -3,13 +3,11 @@ import 'package:cinematic_insights/api/api.dart';
 import 'package:cinematic_insights/colors.dart';
 import 'package:cinematic_insights/models/movieClass.dart';
 import 'package:cinematic_insights/screens/details_screen.dart';
-//import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CategoryScreen extends StatefulWidget {
-  final String category; // Add this parameter
-
+  final String category; 
   CategoryScreen({required this.category});
   @override
   CategoryScreenState createState() => CategoryScreenState();
@@ -22,6 +20,20 @@ class CategoryScreenState extends State<CategoryScreen>
   late int currentPage;
   late TextEditingController searchController;
   static const String apiKey = '?api_key=3c749db8d5e8d99a3e62389eff41fba3';
+
+  String croppedOverview(String Overview)
+  {
+    List<String> Words = Overview.split(' ');
+    if (Words.length <= 20)
+    {
+      return Overview;
+    }
+    else
+    {
+      List<String> croppedList = Words.sublist(0, 20);
+      return '${croppedList.join(' ')}.....';
+    }
+  }
 
   @override
   void initState() {
@@ -39,7 +51,8 @@ class CategoryScreenState extends State<CategoryScreen>
     });
   }
 
-  Future<void> UpdateMovies() async {
+  Future<void> UpdateMovies() async
+  {
     try {
       List<Movie> updatedMoviesList = await Api().fetchAllMoviesWithPage(currentPage, widget.category);
       allMoviesDisplayed.addAll(updatedMoviesList);
@@ -65,50 +78,33 @@ class CategoryScreenState extends State<CategoryScreen>
           children: [
             Image.asset(
               "assets/logo.png",
-              width: screenSize.width * 0.78,
-              height: screenSize.height * 0.28,
+              width: screenSize.width * 0.65,
+              height: screenSize.height * 0.2,
               fit: BoxFit.contain,
               filterQuality: FilterQuality.high,
             ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                0.125 * screenSize.width,
-                0.03 * screenSize.height,
-                0.125 * screenSize.width,
-                0.03 * screenSize.height,
-              ),
-              child: Container(
-                height: 0.05 * screenSize.height,
-                width: 0.5 * screenSize.width,
-                child: TextField(
-                  decoration: const InputDecoration(
-                    hintText: 'Search...',
-                    border: OutlineInputBorder(),
-                  ),
-                  onChanged: (value) {
-                    // Handle search input changes
-                  },
-                ),
-              ),
-            ),
+            Divider (thickness: 0.5,color: Colors.white ),
 
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children:[
-                SizedBox(width: screenSize.width*0.02),
                 Text(
                   (widget.category),
                   style: GoogleFonts.aBeeZee(
                   fontSize: 20,
                   decoration: TextDecoration.underline,
+                  fontWeight: FontWeight.bold,
                   color:const Color.fromRGBO(253, 203, 74, 1.0),
                   ),
                 ),
               ],
             ),
 
+            Divider (thickness: 0.5,color: Colors.white ),
+
             Row(
               children: [
-                SizedBox (width: screenSize.width*0.02),
+                SizedBox (width: screenSize.width*0.1),
                 Text(
                   "Sort by     ",
                   style: GoogleFonts.aBeeZee(
@@ -146,51 +142,101 @@ class CategoryScreenState extends State<CategoryScreen>
 
             const SizedBox(height: 15),
 
-           Expanded(
-              child: ListView.builder(
-                controller: scrollController,
-                itemCount: allMoviesDisplayed.length,
-                itemBuilder: (context, index) {
-                  Movie movie = allMoviesDisplayed[index];
-                  return ListTile(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-                    leading: SizedBox(
-                      //height: 300,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: Container(
-                          width: screenSize.width*0.25,
-                          child: Image.network(
-                            'https://image.tmdb.org/t/p/w500${movie.posterPath}',
-                            fit: BoxFit.fill,
+            Expanded(
+              child: Row(
+                children: [
+                  SizedBox(width: screenSize.width * 0.1),
+                  Expanded(
+                    child: ListView.builder(
+                      controller: scrollController,
+                      itemCount: allMoviesDisplayed.length,
+                      scrollDirection: Axis.vertical,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        Movie movie = allMoviesDisplayed[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DetailsScreen(movie: movie),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(top: 8, bottom: 8, right: screenSize.width*0.1),
+                            height: 150,
+                            width: screenSize.width * 0.8,
+                            decoration: const BoxDecoration(
+                              color: const Color.fromRGBO(253, 203, 74, 1.0),
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 125,
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                    image: DecorationImage(
+                                      image: NetworkImage(
+                                        'https://image.tmdb.org/t/p/w500${movie.posterPath}',
+                                      ),
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 20),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    child: Column(
+                                      //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          height: 32,
+                                          width: screenSize.width*0.45,
+                                          child: Text(
+                                            "${index+1}. ${movie.title}",
+                                            style: const TextStyle(color: Colors.black,decoration: TextDecoration.underline, fontWeight: FontWeight.bold,fontSize: 14),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: screenSize.width * 0.45,
+                                          height: 80,
+                                          child: Text(
+                                            "${croppedOverview(movie.overview)}",
+                                            style: TextStyle(color: Colors.black, fontSize: 14),
+                                          ),
+                                        ),
+                                        Container(
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              const Icon(
+                                                Icons.star,
+                                                color: Colors.black,
+                                                size: 20,
+                                              ),
+                                              SizedBox(width: 5),
+                                              Text(
+                                                "${movie.voteAverage.toStringAsFixed(1)}/10",
+                                                style: TextStyle(color: Colors.black),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "${index + 1}. ${movie.title}",
-                          style: GoogleFonts.aBeeZee(
-                            fontSize: 15,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                        SizedBox(height: 5), // Add space between title and subtitle
-                        Text(
-                          movie.overview,
-                          style: GoogleFonts.aBeeZee(
-                            fontSize: 13,
-                          ),
-                        ),
-                      ],
-                    ),
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: ((context) => DetailsScreen(movie:movie ))));
-                    },
-                  );
-                },
+                  ),
+                ],
               ),
             ),
         ],

@@ -15,9 +15,6 @@ class MovieSlider extends StatelessWidget
   {
     final Size screenSize = MediaQuery.of(context).size;
 
-    print("Width: ${screenSize.width}");
-    print("Height: ${screenSize.height}");
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
