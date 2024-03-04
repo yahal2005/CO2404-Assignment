@@ -1,4 +1,3 @@
-
 class Movie
 {
   String title;
@@ -10,6 +9,7 @@ class Movie
   List<dynamic> genreIds;
   String releaseDate;
   double voteAverage;
+  String mediaType;
 
   Movie({
     required this.title,
@@ -21,6 +21,7 @@ class Movie
     required this.genreIds,
     required this.releaseDate,
     required this.voteAverage,
+    required this.mediaType,
   });
 
   factory Movie.fromJson(Map<String, dynamic> json) {
@@ -31,9 +32,10 @@ class Movie
       overview: json["overview"] ?? "OverView not available",
       posterPath: json["poster_path"] ?? json["backdrop_path"] ?? "",
       movieID:  json["id"] ?? -1,
-      genreIds:  json["genre_ids"] ?? [],
+      genreIds:  json["genre_ids"] ?? ((json['genres'] as List<dynamic>).map((genre) => genre['id']).toList()) ?? [],
       releaseDate: json["release_date"] ?? json["first_air_date"] ?? "Release date not available",
       voteAverage: json["vote_average"] ?? 0.0,
+      mediaType: json["media_type"] ?? "movie",
     );
   }
 

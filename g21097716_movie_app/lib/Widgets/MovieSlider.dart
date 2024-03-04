@@ -1,7 +1,7 @@
 import 'package:cinematic_insights/screens/category_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cinematic_insights/screens/details_screen.dart';
+import 'package:cinematic_insights/screens/movie_details_screen.dart';
 
 class MovieSlider extends StatelessWidget
 {
@@ -25,7 +25,7 @@ class MovieSlider extends StatelessWidget
             Text(
               (category),
               style: GoogleFonts.aBeeZee(
-              fontSize: 20,
+              fontSize: 16,
               decoration: TextDecoration.underline,
               color:const Color.fromRGBO(253, 203, 74, 1.0),
               ),
@@ -48,7 +48,7 @@ class MovieSlider extends StatelessWidget
                 return GestureDetector(
                   onTap:()
                   {
-                    Navigator.push(context, MaterialPageRoute(builder: ((context) => DetailsScreen(movie: snapshot.data[itemIndex]))));
+                    Navigator.push(context, MaterialPageRoute(builder: ((context) => MoviesDetailsScreen(movie: snapshot.data[itemIndex]))));
                   },
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(

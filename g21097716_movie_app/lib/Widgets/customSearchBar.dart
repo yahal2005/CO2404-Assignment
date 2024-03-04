@@ -1,7 +1,7 @@
+import 'package:cinematic_insights/models/movieClass.dart';
 import 'package:flutter/material.dart';
 import 'package:cinematic_insights/api/api.dart';
-import 'package:cinematic_insights/models/movieClass.dart';
-import 'package:cinematic_insights/screens/details_screen.dart';
+import 'package:cinematic_insights/screens/movie_details_screen.dart';
 
 class CustomSearchBar extends StatefulWidget 
 {
@@ -16,14 +16,26 @@ class CustomSearchBarState extends State<CustomSearchBar>
   List<Movie> searchResult = [];
   final TextEditingController searchText = TextEditingController();
   var searchValue;
+  String dropdownValue = "Movie";
 
   Future<void> getSearchResult(String searchValue) async {
-    List<Movie> result = await Api().searchList(searchValue);
+    List<Movie> result;
+    if (dropdownValue == "Movie")
+    {
+      result = await Api().searchListMovies(searchValue);
+    }
+    else
+    {
+      result = await Api().searchListPerson(searchValue);
+    }
+    
     setState(() 
     {
       searchResult = result;
     });
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -36,48 +48,67 @@ class CustomSearchBarState extends State<CustomSearchBar>
       },
       child: Column(
         children: [
-          Container(
-            height: 0.05 * screenSize.height,
-            width: 0.5 * screenSize.width,
-            child: TextField(
-              decoration: const InputDecoration(
-                hintText: 'Search...',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: Colors.amber,
+          Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: screenSize.width*0.08),
+                child: Container(
+                  height: 0.051 * screenSize.height,
+                  width: 0.45 * screenSize.width,
+                  child: TextField(
+                    decoration: const InputDecoration(
+                      hintText: 'Search...',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Colors.amber,
+                      ),
+                    ),
+                    autofocus: false,
+                    controller: searchText,
+                    onChanged: (value) 
+                    {
+                      setState(()
+                      {
+                        searchValue = value;
+                      });
+                      if (searchValue.length == 0)
+                      {
+                        setState(() 
+                        {
+                          searchResult = [];
+                        });
+                      } else if (searchValue.length > 2)
+                      {
+                        getSearchResult(searchValue);
+                      }
+                    },
+                    onSubmitted: (value) {
+                      setState(() 
+                      {
+                        searchValue = value;
+                      });
+                      if (searchValue.length > 2) 
+                      {
+                        getSearchResult(searchValue);
+                      }
+                    },
+                  ),
                 ),
               ),
-              autofocus: false,
-              controller: searchText,
-              onChanged: (value) 
-              {
-                setState(()
-                {
-                  searchValue = value;
-                });
-                if (searchValue.length == 0)
-                {
-                  setState(() 
-                  {
-                    searchResult = [];
+              DropdownButton(
+                items: const[
+                  DropdownMenuItem(child: Text("Movie Name"), value: "Movie"),
+                  DropdownMenuItem(child: Text("Actor Name"), value: "Actor"),
+                ],
+                onChanged: (String? newValue){
+                  setState(() {
+                    dropdownValue = newValue!;
                   });
-                } else if (searchValue.length > 2)
-                {
-                  getSearchResult(searchValue);
-                }
-              },
-              onSubmitted: (value) {
-                setState(() 
-                {
-                  searchValue = value;
-                });
-                if (searchValue.length > 2) 
-                {
-                  getSearchResult(searchValue);
-                }
-              },
-            ),
+                },
+                value: dropdownValue,
+              )
+            ],
           ),
           if (searchResult.isNotEmpty)
             Container(
@@ -94,7 +125,7 @@ class CustomSearchBarState extends State<CustomSearchBar>
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DetailsScreen(movie: searchResult[index]),
+                          builder: (context) => MoviesDetailsScreen(movie: searchResult[index]),
                         ),
                       );
                     },
@@ -115,7 +146,7 @@ class CustomSearchBarState extends State<CustomSearchBar>
                                   const BorderRadius.all(Radius.circular(10)),
                               image: DecorationImage(
                                 image: NetworkImage(
-                                  'https://image.tmdb.org/t/p/w500${searchResult[index].posterPath}',
+                                  "https://image.tmdb.org/t/p/w500${searchResult[index].posterPath}",
                                 ),
                                 fit: BoxFit.fill,
                               ),
@@ -133,7 +164,7 @@ class CustomSearchBarState extends State<CustomSearchBar>
                                     width: screenSize.width * 0.4,
                                     height: 85,
                                     child: Text(
-                                      "${searchResult[index].overview}",
+                                      searchResult[index].overview,
                                     ),
                                   ),
                                   Container(
@@ -149,7 +180,7 @@ class CustomSearchBarState extends State<CustomSearchBar>
                                           ),
                                           SizedBox(width: 5),
                                           Text(
-                                            "${searchResult[index].voteAverage}/10",
+                                            "${searchResult[index].voteAverage.toString()} / 10",
                                           ),
                                         ],
                                       ),

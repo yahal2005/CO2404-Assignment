@@ -3,6 +3,7 @@ import 'package:cinematic_insights/colors.dart';
 import 'package:cinematic_insights/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cinematic_insights/Network/dependency_injection.dart';
 
 class LoginScreen extends StatefulWidget
 {
@@ -16,6 +17,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
 
   final passwordController = TextEditingController();
+
+
+  void initState() {
+    super.initState(); 
+    DependencyInjection.init();
+  }
 
   void SignUserIn(BuildContext context) async
   {

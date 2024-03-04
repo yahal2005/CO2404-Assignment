@@ -7,19 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cinematic_insights/Network/dependency_injection.dart';
 
-class CategoryScreen extends StatefulWidget {
-  final String category; 
-  CategoryScreen({required this.category});
+class WatchListCategoryScreen extends StatefulWidget {
+  final List<Movie> watchList;
+  WatchListCategoryScreen({required this.watchList});
   @override
-  CategoryScreenState createState() => CategoryScreenState();
+  WatchListCategoryScreenState createState() => WatchListCategoryScreenState();
 }
 
-class CategoryScreenState extends State<CategoryScreen> 
+class WatchListCategoryScreenState extends State<WatchListCategoryScreen> 
 {
-  late ScrollController scrollController;
-  late List<Movie> allMoviesDisplayed;
-  late int currentPage;
-  late TextEditingController searchController;
   String dropdownValue = "Asc";
 
   String croppedOverview(String Overview)
@@ -39,31 +35,7 @@ class CategoryScreenState extends State<CategoryScreen>
   @override
   void initState() {
     super.initState();
-    scrollController = ScrollController();
-    allMoviesDisplayed = [];
-    currentPage = 1;
-    UpdateMovies();
     DependencyInjection.init();
-    
-    
-    scrollController.addListener(() {
-      if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
-        UpdateMovies();
-      }
-    });
-  }
-
-  Future<void> UpdateMovies() async
-  {
-    try {
-      List<Movie> updatedMoviesList = await Api().fetchAllMoviesWithPage(currentPage, widget.category, dropdownValue);
-      allMoviesDisplayed.addAll(updatedMoviesList);
-      currentPage++;
-
-      setState(() {});
-    } catch (e) {
-      // Handle error fetching more movies
-    }
   }
 
   @override
@@ -90,7 +62,7 @@ class CategoryScreenState extends State<CategoryScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               children:[
                 Text(
-                  (widget.category),
+                  ("Watch List"),
                   style: GoogleFonts.aBeeZee(
                   fontSize: 20,
                   decoration: TextDecoration.underline,
@@ -137,12 +109,11 @@ class CategoryScreenState extends State<CategoryScreen>
                   SizedBox(width: screenSize.width * 0.1),
                   Expanded(
                     child: ListView.builder(
-                      controller: scrollController,
-                      itemCount: allMoviesDisplayed.length,
+                      itemCount: widget.watchList.length,
                       scrollDirection: Axis.vertical,
                       physics: const BouncingScrollPhysics(),
                       itemBuilder: (context, index) {
-                        Movie movie = allMoviesDisplayed[index];
+                        Movie movie = widget.watchList[index];
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -179,7 +150,6 @@ class CategoryScreenState extends State<CategoryScreen>
                                   padding: const EdgeInsets.all(8.0),
                                   child: Container(
                                     child: Column(
-                                      //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Container(
                                           height: 32,

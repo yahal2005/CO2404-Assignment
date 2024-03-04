@@ -6,24 +6,26 @@ import 'package:flutter/material.dart';
 import 'package:cinematic_insights/models/movieClass.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cinematic_insights/api/api.dart';
+import 'package:cinematic_insights/Network/dependency_injection.dart';
 
 
 
-class DetailsScreen extends StatefulWidget 
+class MoviesDetailsScreen extends StatefulWidget 
 {
-  const DetailsScreen({super.key, required this.movie});
+  const MoviesDetailsScreen({super.key, required this.movie});
   final Movie movie;
-  State<DetailsScreen> createState() => _DetailsScreenState();
+  State<MoviesDetailsScreen> createState() => _DetailsScreenState();
 }
 
 
-class _DetailsScreenState extends State<DetailsScreen> 
+class _DetailsScreenState extends State<MoviesDetailsScreen> 
 {
   late Future<List<Genre>> AvailableGenre;
   
   void initState() {
     super.initState();
     initializeData(); 
+    DependencyInjection.init();
   }
 
   Future<void> initializeData() async {
@@ -53,11 +55,9 @@ class _DetailsScreenState extends State<DetailsScreen>
 
   Future addToWatchList(int Id) async
   {
-    await FirebaseFirestore.instance.collection('MyList').add(
-      {
-        'ID': Id.toString(),
-      }
-    );
+    await FirebaseFirestore.instance.collection('WatchList').doc(Id.toString()).set({
+      'ID': Id,
+    });
   }
 
   @override

@@ -1,3 +1,4 @@
+import 'package:cinematic_insights/Network/dependency_injection.dart';
 import 'package:flutter/material.dart';
 import 'package:cinematic_insights/Widgets/customSearchBar.dart';
 import 'package:cinematic_insights/screens/Section%20Screens/MoviesAndTVShows.dart';
@@ -25,7 +26,8 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState()
   {
     super.initState();
-    initializeData(); 
+    initializeData();
+    DependencyInjection.init();
   }
 
   Future<void> initializeData() async 

@@ -1,7 +1,9 @@
+import 'package:cinematic_insights/Network/dependency_injection.dart';
 import 'package:cinematic_insights/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cinematic_insights/colors.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'firebase_options.dart';
 
 
@@ -13,6 +15,7 @@ void main() async
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  DependencyInjection.init();
   runApp(const MyApp());
 }
 
@@ -22,7 +25,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context)
   {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Cinematic Insights',
       theme: ThemeData.dark().copyWith(
