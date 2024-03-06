@@ -1,5 +1,4 @@
 import 'package:cinematic_insights/Widgets/back_button.dart';
-import 'package:cinematic_insights/api/api.dart';
 import 'package:cinematic_insights/colors.dart';
 import 'package:cinematic_insights/models/movieClass.dart';
 import 'package:cinematic_insights/screens/movie_details_screen.dart';

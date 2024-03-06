@@ -124,7 +124,7 @@ class Api
     }
   }
 
-   Future<List<Movie>> fetchAllMoviesWithPage(int page, String category, String dropdownValue)async 
+  Future<List<Movie>> fetchAllMoviesWithPage(int page, String category, String dropdownValue)async 
    {
   
     String url = '';
@@ -140,17 +140,17 @@ class Api
     
     if (category == "What's on at the cinema?") 
     {
-      url = '$cinemaUrl&page=$page&$sortby';
+      url = '$cinemaUrl&page=$page';
 
     } 
     else if (category == "What are the best movies this year?")
     {
-      url = '$popularUrl&page=$page&$sortby';
+      url = '$popularUrl&page=$page';
 
     }
     else if (category == "What are the highest grossing movies of all time?")
     {
-      url = '$highestGrossingUrl&page=$page&$sortby';
+      url = '$highestGrossingUrl&page=$page';
 
     }
     else if (category == "Children-friendly movies")
@@ -159,7 +159,7 @@ class Api
     }
     else if (category == "What's on TV tonight?")
     {
-      url = '$tvUrl&page=$page&$sortby';
+      url = '$tvUrl&page=$page';
     }
 
     final response = await http.get(Uri.parse(url),);
@@ -178,6 +178,7 @@ class Api
   Future<List<Movie>> searchListMovies(String search) async
   {
     var searchResponse = await http.get(Uri.parse('${searchMovieUrl}&query=${search}'));
+
     if (searchResponse.statusCode == 200) {
       Map<String, dynamic> data = jsonDecode(searchResponse.body);
       List<dynamic> movies = data['results'] as List;
@@ -199,33 +200,35 @@ class Api
   }
 
   Future<List<Movie>> searchListPerson(String search) async {
-  var searchResponse = await http.get(Uri.parse('${searchPersonUrl}&query=${search}'));
-  if (searchResponse.statusCode == 200)
-  {
-    Map<String, dynamic> data = jsonDecode(searchResponse.body);
-    if (data.containsKey('results')) {
-      List<dynamic> results = data['results'];
-      List<Movie> searchResults = [];
 
-      for (var result in results) {
-        if (result.containsKey('known_for'))
-        {
-          List<dynamic> knownFor = result['known_for'];
-          searchResults.addAll(knownFor.map((json) => Movie.fromJson(json)));
+    var searchResponse = await http.get(Uri.parse('${searchPersonUrl}&query=${search}'));
+
+    if (searchResponse.statusCode == 200)
+    {
+      Map<String, dynamic> data = jsonDecode(searchResponse.body);
+      if (data.containsKey('results')) {
+        List<dynamic> results = data['results'];
+        List<Movie> searchResults = [];
+
+        for (var result in results) {
+          if (result.containsKey('known_for'))
+          {
+            List<dynamic> knownFor = result['known_for'];
+            searchResults.addAll(knownFor.map((json) => Movie.fromJson(json)));
+          }
         }
-      }
 
-      return (searchResults);
-    } 
+        return (searchResults);
+      } 
+      else
+      {
+        throw Exception('No results found');
+      }
+    }
     else
     {
-      throw Exception('No results found');
+      throw Exception('Details Not Found');
     }
   }
-  else
-  {
-    throw Exception('Details Not Found');
-  }
-}
 
 }

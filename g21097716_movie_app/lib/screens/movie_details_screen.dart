@@ -31,6 +31,45 @@ class _DetailsScreenState extends State<MoviesDetailsScreen>
   Future<void> initializeData() async {
     AvailableGenre = Api().getGenres();
   }
+   
+  Future<List<int>> getWatchList() async 
+  {
+    try {
+      CollectionReference watchListRef = FirebaseFirestore.instance.collection('WatchList');
+
+      QuerySnapshot querySnapshot = await watchListRef.get();
+
+      List<int> watchList = [];
+
+      for (DocumentSnapshot doc in querySnapshot.docs) {
+        int? id = int.tryParse(doc.id);
+        if (id != null) 
+        {
+          watchList.add(id);
+        }
+      }
+
+      return watchList;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Future<bool> checkWatchList(int Id) async
+  {
+    List<int> WatchList = await getWatchList();
+    bool found = false;
+    int x = 0;
+    while(x < WatchList.length && found == false)
+    {
+      if (WatchList[x] == Id)
+      {
+        found = true;
+      }
+      x++;
+    }
+    return found;
+  }
 
   Future<List<String>> GetTheGenres() async {
     final List<String> genreNames = [];
@@ -58,6 +97,11 @@ class _DetailsScreenState extends State<MoviesDetailsScreen>
     await FirebaseFirestore.instance.collection('WatchList').doc(Id.toString()).set({
       'ID': Id,
     });
+  }
+
+  Future removeFromWatchList(int Id) async
+  {
+    await FirebaseFirestore.instance.collection('WatchList').doc(Id.toString()).delete();
   }
 
   @override
@@ -203,39 +247,67 @@ class _DetailsScreenState extends State<MoviesDetailsScreen>
             child: Column(
               //crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SizedBox(
-                  width: screenSize.width*0.75,
-                  child: ElevatedButton.icon(
-                    onPressed: ()
-                     {
-                      addToWatchList(widget.movie.movieID);
-                     },
-                    icon: const Icon(
-                      Icons.add,
-                      color: Colours.scaffoldBgColor,
-                      size: 25,
-                    ),
-                    label: Text(
-                      'Add to watchlist',
-                      style: GoogleFonts.roboto(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                        Color.fromRGBO(253, 203, 74, 1.0),
-                      ),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                FutureBuilder(
+                  future: checkWatchList(widget.movie.movieID), 
+                  builder: (context,snapshot)
+                  {
+                    if (snapshot.connectionState == ConnectionState.waiting)
+                    {
+                      return Container();
+                    }
+                    else if (snapshot.hasError)
+                    {
+                      return Text("${snapshot.error}");
+                    }
+                    else
+                    {
+                      bool isOnWatchList = snapshot.data ?? false;
+                      return SizedBox(
+                        width: screenSize.width*0.75,
+                        child: ElevatedButton.icon(
+                          icon: Icon(
+                            isOnWatchList ? Icons.remove : Icons.add,
+                            color: Colours.scaffoldBgColor,
+                            size: 25,
+                          ),
+                          label: Text(
+                            isOnWatchList ? 'Remove from watchlist' : 'Add to watchlist',
+                            style: GoogleFonts.roboto(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                              Color.fromRGBO(253, 203, 74, 1.0),
+                            ),
+                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                          ),
+                          onPressed: ()
+                          {
+                            if (isOnWatchList == false)
+                            {
+                              addToWatchList(widget.movie.movieID);
+                            }
+                            else
+                            {
+                               removeFromWatchList(widget.movie.movieID);
+                            }
+                            setState(() {
+                              isOnWatchList = !isOnWatchList;
+                            });
+                          },
                         ),
-                      ),
-                      
-                    ),
-                  ),
+                      );
+                    }
+                  }
                 ),
+                
                 Container(
                   height: 20, 
                   color: Colors.black,

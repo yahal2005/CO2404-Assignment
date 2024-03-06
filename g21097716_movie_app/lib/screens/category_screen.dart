@@ -103,31 +103,36 @@ class CategoryScreenState extends State<CategoryScreen>
 
             Divider (thickness: 0.5,color: Colors.white ),
 
-            Row(
-              children: [
-                SizedBox (width: screenSize.width*0.1),
-                Text(
-                  "Sort by     ",
-                  style: GoogleFonts.aBeeZee(
-                  fontSize: 15,
-                  color:Color.fromARGB(255, 252, 252, 252),
+            if (widget.category == " Children-friendly movies")
+              Row(
+                children: [
+                  SizedBox (width: screenSize.width*0.1),
+                  Text(
+                    "Sort by     ",
+                    style: GoogleFonts.aBeeZee(
+                    fontSize: 15,
+                    color:Color.fromARGB(255, 252, 252, 252),
+                    ),
                   ),
-                ),
-                DropdownButton(
-                  items: const[
-                    DropdownMenuItem(child: Text("Alphabetical Order"), value: "Asc"),
-                    DropdownMenuItem(child: Text("Popularity Ascending"), value: "PopAsc"),
-                    DropdownMenuItem(child: Text("Popularity Descending"), value: "PopDesc")
-                  ],
-                  onChanged: (String? newValue){
-                    setState(() {
-                      dropdownValue = newValue!;
-                    });
-                  },
-                  value: dropdownValue,
-                )
-              ],
-            ),
+                  DropdownButton(
+                    items: const[
+                      DropdownMenuItem(child: Text("Alphabetical Order"), value: "Asc"),
+                      DropdownMenuItem(child: Text("Popularity Ascending"), value: "PopAsc"),
+                      DropdownMenuItem(child: Text("Popularity Descending"), value: "PopDesc")
+                    ],
+                    onChanged: (String? newValue){
+                      setState(() {
+                        dropdownValue = newValue!;
+                      });
+                      allMoviesDisplayed = [];
+                      currentPage = 1;
+                      UpdateMovies();
+
+                    },
+                    value: dropdownValue,
+                  )
+                ],
+              ),
 
             const SizedBox(height: 15),
 

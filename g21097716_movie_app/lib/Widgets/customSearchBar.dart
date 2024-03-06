@@ -16,7 +16,9 @@ class CustomSearchBarState extends State<CustomSearchBar>
   List<Movie> searchResult = [];
   final TextEditingController searchText = TextEditingController();
   var searchValue;
+  bool isVisible = false;
   String dropdownValue = "Movie";
+  String filterDropdownValue = "None";
 
   Future<void> getSearchResult(String searchValue) async {
     List<Movie> result;
@@ -48,66 +50,145 @@ class CustomSearchBarState extends State<CustomSearchBar>
       },
       child: Column(
         children: [
-          Row(
+          Column(
             children: [
-              Padding(
-                padding: EdgeInsets.only(left: screenSize.width*0.08),
-                child: Container(
-                  height: 0.051 * screenSize.height,
-                  width: 0.45 * screenSize.width,
-                  child: TextField(
-                    decoration: const InputDecoration(
-                      hintText: 'Search...',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: Colors.amber,
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: screenSize.width*0.08),
+                    child: Container(
+                      height: 0.051 * screenSize.height,
+                      width: 0.45 * screenSize.width,
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          hintText: 'Search...',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: Colors.amber,
+                          ),
+                        ),
+                        autofocus: false,
+                        controller: searchText,
+                        onChanged: (value) 
+                        {
+                          setState(()
+                          {
+                            searchValue = value;
+                          });
+                          if (searchValue.length == 0)
+                          {
+                            setState(() 
+                            {
+                              searchResult = [];
+                            });
+                          } else if (searchValue.length > 2)
+                          {
+                            getSearchResult(searchValue);
+                          }
+                        },
+                        onSubmitted: (value) {
+                          setState(() 
+                          {
+                            searchValue = value;
+                          });
+                          if (searchValue.length > 2) 
+                          {
+                            getSearchResult(searchValue);
+                          }
+                        },
                       ),
                     ),
-                    autofocus: false,
-                    controller: searchText,
-                    onChanged: (value) 
-                    {
+                  ),
+
+                  Container(
+                    child: DropdownButton(
+                      items: const[
+                        DropdownMenuItem(child: Text("Movie Name"), value: "Movie"),
+                        DropdownMenuItem(child: Text("Actor Name"), value: "Actor"),
+                      ],
+                      onChanged: (String? newValue){
+                        setState(() {
+                          dropdownValue = newValue!;
+                        });
+                        if (searchValue != null && searchValue.length == 0)
+                        {
+                          setState(() 
+                          {
+                            searchResult = [];
+                          });
+                        } else if (searchValue != null && searchValue.length > 2)
+                        {
+                          getSearchResult(searchValue);
+                        }
+                      },
+                      value: dropdownValue,
+                    )
+                  ),
+
+
+                  /*IconButton(
+                    icon:  Icon(Icons.arrow_downward),
+                    onPressed: (){
                       setState(()
                       {
-                        searchValue = value;
+                        isVisible = !isVisible;
                       });
-                      if (searchValue.length == 0)
-                      {
-                        setState(() 
-                        {
-                          searchResult = [];
-                        });
-                      } else if (searchValue.length > 2)
-                      {
-                        getSearchResult(searchValue);
-                      }
                     },
-                    onSubmitted: (value) {
-                      setState(() 
-                      {
-                        searchValue = value;
-                      });
-                      if (searchValue.length > 2) 
-                      {
-                        getSearchResult(searchValue);
-                      }
-                    },
-                  ),
-                ),
-              ),
-              DropdownButton(
-                items: const[
-                  DropdownMenuItem(child: Text("Movie Name"), value: "Movie"),
-                  DropdownMenuItem(child: Text("Actor Name"), value: "Actor"),
+                  ),*/
                 ],
-                onChanged: (String? newValue){
-                  setState(() {
-                    dropdownValue = newValue!;
-                  });
-                },
-                value: dropdownValue,
-              )
+              ),
+              /*if (isVisible)
+                Container(
+                  padding: EdgeInsets.all(16.0),
+                  child : Row(
+                    children: [
+                      Container(
+                        child: Row(
+                          children: [
+                            Text("Search by: "),
+                            const SizedBox(width: 5),
+                            DropdownButton(
+                              items: const[
+                                DropdownMenuItem(child: Text("Movie Name"), value: "Movie"),
+                                DropdownMenuItem(child: Text("Actor Name"), value: "Actor"),
+                              ],
+                              onChanged: (String? newValue){
+                                setState(() {
+                                  dropdownValue = newValue!;
+                                });
+                              },
+                              value: dropdownValue,
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: screenSize.width*0.1),
+                      Container(
+                        child: Row(
+                          children: [
+                            Text("Filter by: "),
+                            const SizedBox(width: 5),
+                            DropdownButton(
+                              items: const[
+                                DropdownMenuItem(child: Text("None"), value: "None"),
+                                DropdownMenuItem(child: Text("Popularity Ascending"), value: "PopAsc"),
+                                DropdownMenuItem(child: Text("Popularity Descending"), value: "PopDesc")
+                              ],
+                              onChanged: (String? newValue){
+                                setState(() {
+                                  filterDropdownValue = newValue!;
+                                });
+                              },
+                              value: filterDropdownValue,
+                            )
+                          ],
+                        ),
+                      ),
+
+                    ],
+                    )
+                )*/
             ],
           ),
           if (searchResult.isNotEmpty)

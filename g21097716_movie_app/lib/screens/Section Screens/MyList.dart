@@ -15,7 +15,8 @@ class MyList extends StatefulWidget
   
 }
 
-Future<List<Movie>> getWatchList() async {
+Future<List<Movie>> getWatchList() async 
+{
   try {
     CollectionReference watchListRef = FirebaseFirestore.instance.collection('WatchList');
 

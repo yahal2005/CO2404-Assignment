@@ -2,6 +2,7 @@ import 'package:cinematic_insights/Widgets/MovieSlider.dart';
 import 'package:cinematic_insights/models/movieClass.dart';
 import 'package:flutter/material.dart';
 
+
 class MoviesAndTvShows extends StatefulWidget
 {
   late Future<List<Movie>> currentlyPlaying;
