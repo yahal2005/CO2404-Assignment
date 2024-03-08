@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
   final bool obscureText;
 
-  const CustomTextField({
+  CustomTextField({
     super.key,
     required this.controller,
     required this.hintText,
@@ -13,6 +13,22 @@ class CustomTextField extends StatelessWidget {
   }) ;
 
   @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  bool visibility = false;
+
+  void initState()
+  {
+    super.initState();
+    visibility = widget.obscureText;
+  }
+
+
+
+  @override
+
   Widget build(BuildContext context) 
   {
   
@@ -20,8 +36,8 @@ class CustomTextField extends StatelessWidget {
       width: 450,
       height: 35 ,
       child: TextField(
-        controller: controller,
-        obscureText: obscureText,
+        controller: widget.controller,
+        obscureText: visibility,
         style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
           enabledBorder: const OutlineInputBorder(
@@ -32,8 +48,24 @@ class CustomTextField extends StatelessWidget {
           ),
           fillColor: Colors.grey.shade200,
           filled: true,
-          hintText: hintText,
+          hintText: widget.hintText,
           hintStyle: const TextStyle(color: Colors.black),
+          suffixIcon : widget.obscureText
+               ? IconButton(
+                onPressed: ()
+                {
+                  setState(()
+                  {
+                    visibility = !visibility;
+                  });
+                }, 
+                icon: Icon(
+                  visibility ? Icons.visibility_off: Icons.visibility,
+                  color: Colors.black,
+                )) 
+                : null,
+          //suffix icon will be only displayed if the text field is used to enter a password
+          
         ),
       ),
     );

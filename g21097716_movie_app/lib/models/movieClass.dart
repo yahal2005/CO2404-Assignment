@@ -39,11 +39,5 @@ class Movie
     );
   }
 
-  
-
- /* Map<String,dynamic> toJson()
-  {
-    return ();
-  }*/
 }
 

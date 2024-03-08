@@ -30,6 +30,7 @@ class WatchListCategoryScreenState extends State<WatchListCategoryScreen>
       return '${croppedList.join(' ')}.....';
     }
   }
+  // Reducing the overview to 20 Words
 
   @override
   void initState() {
@@ -55,7 +56,9 @@ class WatchListCategoryScreenState extends State<WatchListCategoryScreen>
               fit: BoxFit.contain,
               filterQuality: FilterQuality.high,
             ),
-            Divider (thickness: 0.5,color: Colors.white ),
+            //Logo
+            
+            const Divider (thickness: 0.5,color: Colors.white ),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -71,7 +74,9 @@ class WatchListCategoryScreenState extends State<WatchListCategoryScreen>
               ],
             ),
 
-            Divider (thickness: 0.5,color: Colors.white ),
+            //Displays WatchList Title
+
+            const Divider (thickness: 0.5,color: Colors.white ),
 
             Row(
               children: [

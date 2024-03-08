@@ -1,4 +1,5 @@
 import 'package:cinematic_insights/Network/dependency_injection.dart';
+import 'package:cinematic_insights/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cinematic_insights/Widgets/customSearchBar.dart';
 import 'package:cinematic_insights/screens/Section%20Screens/MoviesAndTVShows.dart';
@@ -7,8 +8,10 @@ import 'package:cinematic_insights/models/movieClass.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cinematic_insights/screens/login_screen.dart';
 
+// ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {
   HomeScreen({
+    super.key, 
     required this.currentlyPlaying,
     required this.trendingYr,
     required this.highestGrossing,
@@ -42,11 +45,13 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('Logged', true);
   }
+  // Updates the local bool variable for login
 
   Future<void> loggedOut(BuildContext context) async 
   {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('Logged', false);
+    // ignore: use_build_context_synchronously
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => LoginScreen(
         currentlyPlaying: widget.currentlyPlaying,
@@ -77,6 +82,17 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             },
           ),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0,8,8,0),
+            child: IconButton(
+              onPressed: ()
+              {
+                Navigator.push(context, MaterialPageRoute(builder: ((context) => ProfileScreen())));
+              }, 
+              icon: Icon(Icons.account_circle, size: 42,)),
+          ),
+        ],
       ),
       drawer: Drawer(
         width: screenSize.width * 0.25,

@@ -38,6 +38,7 @@ class _SplashScreenState extends State<SplashScreen>
        {
         print('Error initializing video player: $error');
       });
+    //Displays Video for Splash Screen
   }
 
   Future<void> initializeData() async 
@@ -49,6 +50,7 @@ class _SplashScreenState extends State<SplashScreen>
     onTv = Api().getOnTv();
     
   }
+  //Load all the data related to movies
 
   void _playVideo() async
   {
@@ -56,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     bool isLoggedIn = await getBoolcheckLoggedIn();
 
-    Timer(Duration(seconds: 3),()
+    Timer(Duration(seconds: 5),() //Plays the video for 5 seconds
     {
       if (isLoggedIn == true)
       {
@@ -83,6 +85,7 @@ class _SplashScreenState extends State<SplashScreen>
           )),
         );
       }
+      //Checks if the user is logged in or not and navigates for the relevant screens
     }  
    );
   
@@ -96,13 +99,13 @@ class _SplashScreenState extends State<SplashScreen>
     return (Logged);
 
   }
+  //Calls the locally stored boolean variable to check if user is logged in
 
 
   @override
   Widget build(BuildContext context)
   {
     return Scaffold(
-      //backgroundColor: Colors.black,
       body: Center(
         child: _controller.value.isInitialized
             ? AspectRatio(

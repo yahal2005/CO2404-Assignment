@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cinematic_insights/Network/dependency_injection.dart';
 
+// ignore: must_be_immutable
 class LoginScreen extends StatefulWidget
 {
   LoginScreen({
@@ -30,16 +31,12 @@ class LoginScreen extends StatefulWidget
 
 class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
-
   final passwordController = TextEditingController();
-
-
 
   void initState() {
     super.initState(); 
     DependencyInjection.init();
   }
-
 
   void SignUserIn(BuildContext context) async
   {
@@ -50,6 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
         return const Center(
           child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.amber)),
         );
+        //Until email and password are validated
       }
     );
     try{
@@ -68,19 +66,25 @@ class _LoginScreenState extends State<LoginScreen> {
 
         )),
       );
+      //If email and password are valid
     } 
     on FirebaseAuthException catch(error)
     {
       Navigator.pop(context);
-      if(error.code == 'user-not-found')
+      if(error.message == 'The supplied auth credential is incorrect, malformed or has expired.')
       {
-        errorMessage(context,"Incorrect Email");
+        errorMessage(context,"Incorrect Email or Password");
       }
-      else if(error.code == 'wrong-password')
+      else if(error.message == 'A non-empty password must be provided')
       {
-        errorMessage(context,"Incorrect Password");
+        errorMessage(context,"Please enter the password");
+      }
+      else if(error.message == "The email address is badly formatted.")
+      {
+        errorMessage(context,"Please enter a valid email address");
       }
     }
+    // If email or password is invalid
   }
 
   void errorMessage (BuildContext context, String errorText)
@@ -95,6 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
       },
     );
   }
+  //Error message when invalid email or password is entered
 
   @override
   Widget build(BuildContext context)
@@ -146,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   hintText: "Email",
                   obscureText: false,
                 ),
-                //Text Field to enter the username
+                //Text Field to enter the email
       
                 const SizedBox(height: 10),
       

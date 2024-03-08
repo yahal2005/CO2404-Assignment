@@ -9,7 +9,7 @@ import 'package:cinematic_insights/Network/dependency_injection.dart';
 
 class CategoryScreen extends StatefulWidget {
   final String category; 
-  CategoryScreen({required this.category});
+  const CategoryScreen({super.key, required this.category});
   @override
   CategoryScreenState createState() => CategoryScreenState();
 }
@@ -22,12 +22,12 @@ class CategoryScreenState extends State<CategoryScreen>
   late TextEditingController searchController;
   String dropdownValue = "Asc";
 
-  String croppedOverview(String Overview)
+  String croppedOverview(String overview)
   {
-    List<String> Words = Overview.split(' ');
+    List<String> Words = overview.split(' ');
     if (Words.length <= 20)
     {
-      return Overview;
+      return overview;
     }
     else
     {
@@ -55,6 +55,7 @@ class CategoryScreenState extends State<CategoryScreen>
     });
   }
 
+  // ignore: non_constant_identifier_names
   Future<void> UpdateMovies() async
   {
     try {
@@ -218,8 +219,8 @@ class CategoryScreenState extends State<CategoryScreen>
                                             width: screenSize.width * 0.45,
                                             height: 110,
                                             child: Text(
-                                              "${croppedOverview(movie.overview)}",
-                                              style: TextStyle(color: Colors.black),
+                                              croppedOverview(movie.overview),
+                                              style: const TextStyle(color: Colors.black),
                                             ),
                                           ),
                                           //Overview
@@ -233,10 +234,10 @@ class CategoryScreenState extends State<CategoryScreen>
                                                   color: Colors.black,
                                                   size: 20,
                                                 ),
-                                                SizedBox(width: 5),
+                                                const SizedBox(width: 5),
                                                 Text(
                                                   "${movie.voteAverage.toStringAsFixed(1)}/10",
-                                                  style: TextStyle(color: Colors.black),
+                                                  style: const TextStyle(color: Colors.black),
                                                 ),
                                               ],
                                             ),

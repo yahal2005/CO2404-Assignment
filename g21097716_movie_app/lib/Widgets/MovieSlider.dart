@@ -34,6 +34,7 @@ class MovieSlider extends StatelessWidget
             ),
           ),
         ),
+        //Displays the Category Title
 
         const SizedBox(height: 20),
         SizedBox(
@@ -44,7 +45,7 @@ class MovieSlider extends StatelessWidget
             physics: const BouncingScrollPhysics(),
             itemCount: 11,
             itemBuilder:(context, itemIndex){
-              if(itemIndex < 10)
+              if(itemIndex < 10) // Displays 10 movie posters and an arrow at the end which will lead to a screen containing all the movies of the relevant category
               {
                 return GestureDetector(
                   onTap:()
@@ -54,6 +55,7 @@ class MovieSlider extends StatelessWidget
                     {
                       type = "TvShow";
                     }
+                    //TvShows are not allowed to be added to the watchlist
                     Navigator.push(context, MaterialPageRoute(builder: ((context) => MoviesDetailsScreen(movie: snapshot.data[itemIndex], type: type,))));
                   },
                   child: Padding(
@@ -74,6 +76,7 @@ class MovieSlider extends StatelessWidget
                         ),
                       ),
                     ),
+                    // Movie poster
                   ),
                 );
               }
@@ -93,6 +96,7 @@ class MovieSlider extends StatelessWidget
                     ),
                   ),
                 );
+                //Arrow Button
               }
               
             },

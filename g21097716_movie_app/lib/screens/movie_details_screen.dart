@@ -15,14 +15,16 @@ class MoviesDetailsScreen extends StatefulWidget
   const MoviesDetailsScreen({super.key, required this.movie, required this.type});
   final Movie movie;
   final String type;
+  @override
   State<MoviesDetailsScreen> createState() => DetailsScreenState();
 }
 
 
 class DetailsScreenState extends State<MoviesDetailsScreen> 
 {
-  late Future<List<Genre>> AvailableGenre;
+  late Future<List<Genre>> availableGenre;
   
+  @override
   void initState() {
     super.initState();
     initializeData(); 
@@ -30,8 +32,9 @@ class DetailsScreenState extends State<MoviesDetailsScreen>
   }
 
   Future<void> initializeData() async {
-    AvailableGenre = Api().getGenres();
+    availableGenre = Api().getGenres();
   }
+  //gets all the genres
    
   Future<List<int>> getWatchList() async 
   {
@@ -55,6 +58,7 @@ class DetailsScreenState extends State<MoviesDetailsScreen>
       return [];
     }
   }
+  //Gets the movies in the watchlist from firebase
 
   Future<bool> checkWatchList(int Id) async
   {
@@ -71,12 +75,13 @@ class DetailsScreenState extends State<MoviesDetailsScreen>
     }
     return found;
   }
+  //Checks if selected movie is already in the watchlist
 
   Future<List<String>> GetTheGenres() async {
     final List<String> genreNames = [];
     final List<String> genreIdsInMovie = widget.movie.genreIds.map((value) => value.toString()).toList();
     
-    List<Genre> genres = await AvailableGenre;
+    List<Genre> genres = await availableGenre;
     
     for (int count = 0; count < genreIdsInMovie.length; count++) {
       bool found = false;
@@ -92,6 +97,7 @@ class DetailsScreenState extends State<MoviesDetailsScreen>
     
     return genreNames;
   }
+  //Get the movie specific genres
 
   Future addToWatchList(int Id) async
   {
@@ -99,11 +105,13 @@ class DetailsScreenState extends State<MoviesDetailsScreen>
       'ID': Id,
     });
   }
+  //Add to the watchlist in the firebase
 
   Future removeFromWatchList(int Id) async
   {
     await FirebaseFirestore.instance.collection('WatchList').doc(Id.toString()).delete();
   }
+  //Remove from watchlist in the firebase
 
   @override
   Widget build(BuildContext context) 
@@ -139,9 +147,10 @@ class DetailsScreenState extends State<MoviesDetailsScreen>
                           ),
                         ),
                         //Movie Title
+
                         const SizedBox(height: 30),
+
                         SizedBox(
-                          
                           height: screenSize.height * 0.4,
                           child: ClipRRect(
                             borderRadius: const BorderRadius.only(
@@ -191,8 +200,10 @@ class DetailsScreenState extends State<MoviesDetailsScreen>
                             },
                           ),
                         ),
+                        //Displays the genres of the movie
 
                         const SizedBox(height:20),
+
                         Align(
                           alignment:Alignment.centerLeft,
                           child: Text(
@@ -205,6 +216,7 @@ class DetailsScreenState extends State<MoviesDetailsScreen>
                         ),
                         //Overview
                         const SizedBox(height: 20),
+
                         Row(
                           children: [
                             const Icon(
@@ -222,6 +234,7 @@ class DetailsScreenState extends State<MoviesDetailsScreen>
                         ),
                         //Rating
                         const SizedBox(height: 20),
+
                         Align(
                           alignment:Alignment.centerLeft, 
                           child: Text(
@@ -245,7 +258,6 @@ class DetailsScreenState extends State<MoviesDetailsScreen>
             left: 0,
             right: 0,
             child: Column(
-              //crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 if (widget.type == "movie")
                   FutureBuilder(
@@ -316,7 +328,8 @@ class DetailsScreenState extends State<MoviesDetailsScreen>
               ],
             ),
           ),
-          //Add to watchlist button
+          //Add to watchlist button if not added to watchList
+          // Remove from watchlist button if already added to watchlist
         ],
       ),
     );

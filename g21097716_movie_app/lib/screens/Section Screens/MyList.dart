@@ -38,6 +38,7 @@ Future<List<Movie>> getWatchList() async
     return [];
   }
 }
+//Gets watch list from firebase
 
 
 
@@ -54,7 +55,7 @@ class MyListState extends State<MyList>
         {
           if (snapshot.connectionState == ConnectionState.waiting) 
           {
-            return Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(const Color.fromRGBO(253, 203, 74, 1.0))));
+            return const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color.fromRGBO(253, 203, 74, 1.0))));
 
           } else if (snapshot.hasError) 
           {
@@ -73,7 +74,7 @@ class MyListState extends State<MyList>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 30),
+                        const SizedBox(height: 30),
                           
                         Row(
                           children: [
@@ -86,6 +87,7 @@ class MyListState extends State<MyList>
                                 color: const Color.fromRGBO(253, 203, 74, 1.0),
                               ),
                             ),
+                            //Displays title watch List
                           ],
                         ),
                         const SizedBox(height: 20), 
@@ -100,7 +102,8 @@ class MyListState extends State<MyList>
                                   physics: const BouncingScrollPhysics(),
                                   itemCount: watchList.length,
                                   itemBuilder: (context, itemIndex) {
-                                    if (itemIndex < 10 && itemIndex < watchList.length) {
+                                    if (itemIndex < 10 && itemIndex < watchList.length) // Displays 10 movie posters and an arrow at the end which will lead to a screen containing all the movies of the watchlist
+                                    {
                                       return GestureDetector(
                                         onTap: () {
                                           Navigator.push(
@@ -133,6 +136,7 @@ class MyListState extends State<MyList>
                                               ),
                                             ),
                                           ),
+                                          //Poster
                                         ),
                                       );
                                     } else {
@@ -150,6 +154,7 @@ class MyListState extends State<MyList>
                                           ),
                                         ),
                                       );
+                                      //Yellow arrow
                                     }
                                   },
                                 ),

@@ -40,17 +40,17 @@ class CustomSearchBarState extends State<CustomSearchBar>
   }
   // returns appropriate result based on the search
 
-  String croppedOverview(String Overview)
+  String croppedOverview(String overview)
   {
-    List<String> words = Overview.split(' ');
+    List<String> words = overview.split(' ');
     if (words.length <= 20)
     {
-      return Overview;
+      return overview;
     }
     else
     {
       List<String> croppedList = words.sublist(0, 20);
-      return '${croppedList.join(' ')}.....';
+      return ('${croppedList.join(' ')}.....');
     }
   }
   //Reducing the overview to 20 words
@@ -100,10 +100,12 @@ class CustomSearchBarState extends State<CustomSearchBar>
                             {
                               searchResult = [];
                             });
-                          } else if (searchValue.length > 2)
+                          } 
+                          else if (searchValue.length > 2)
                           {
                             getSearchResult(searchValue);
                           }
+                          //Search is done if there are more than 2 letters entered
                         },
                         onSubmitted: (value) {
                           setState(() 
@@ -147,71 +149,9 @@ class CustomSearchBarState extends State<CustomSearchBar>
                       )
                     ),
                   ),
-                  //Dropdown to search based on actor name or movie title
-
-
-                  /*IconButton(
-                    icon:  Icon(Icons.arrow_downward),
-                    onPressed: (){
-                      setState(()
-                      {
-                        isVisible = !isVisible;
-                      });
-                    },
-                  ),*/
+                  //To search for movies based on movie name or Actor name
                 ],
               ),
-              /*if (isVisible)
-                Container(
-                  padding: EdgeInsets.all(16.0),
-                  child : Row(
-                    children: [
-                      Container(
-                        child: Row(
-                          children: [
-                            Text("Search by: "),
-                            const SizedBox(width: 5),
-                            DropdownButton(
-                              items: const[
-                                DropdownMenuItem(child: Text("Movie Name"), value: "Movie"),
-                                DropdownMenuItem(child: Text("Actor Name"), value: "Actor"),
-                              ],
-                              onChanged: (String? newValue){
-                                setState(() {
-                                  dropdownValue = newValue!;
-                                });
-                              },
-                              value: dropdownValue,
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: screenSize.width*0.1),
-                      Container(
-                        child: Row(
-                          children: [
-                            Text("Filter by: "),
-                            const SizedBox(width: 5),
-                            DropdownButton(
-                              items: const[
-                                DropdownMenuItem(child: Text("None"), value: "None"),
-                                DropdownMenuItem(child: Text("Popularity Ascending"), value: "PopAsc"),
-                                DropdownMenuItem(child: Text("Popularity Descending"), value: "PopDesc")
-                              ],
-                              onChanged: (String? newValue){
-                                setState(() {
-                                  filterDropdownValue = newValue!;
-                                });
-                              },
-                              value: filterDropdownValue,
-                            )
-                          ],
-                        ),
-                      ),
-
-                    ],
-                    )
-                )*/
             ],
           ),
           if (searchResult.isNotEmpty)
@@ -327,6 +267,7 @@ class CustomSearchBarState extends State<CustomSearchBar>
               height: screenSize.height * 0.5,
               child: const Text("No results found"),
             ),
+          // In case no results found
         ],
       ),
     );

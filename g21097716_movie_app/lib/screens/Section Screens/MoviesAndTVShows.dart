@@ -3,6 +3,7 @@ import 'package:cinematic_insights/models/movieClass.dart';
 import 'package:flutter/material.dart';
 
 
+// ignore: must_be_immutable
 class MoviesAndTvShows extends StatefulWidget
 {
   late Future<List<Movie>> currentlyPlaying;
@@ -49,6 +50,8 @@ class MoviesAndTvShowsState extends State<MoviesAndTvShows>
                 },
               ),
             ),
+            // Whats on at the cinema movie slider
+
             SizedBox(
               child: FutureBuilder(
                 future: widget.trendingYr,
@@ -63,6 +66,8 @@ class MoviesAndTvShowsState extends State<MoviesAndTvShows>
                 },
               ),
             ),
+            //What are the best movies this year? movie slider
+
             SizedBox(
               child: FutureBuilder(
                 future: widget.highestGrossing,
@@ -77,6 +82,8 @@ class MoviesAndTvShowsState extends State<MoviesAndTvShows>
                 },
               ),
             ),
+            //What are the highest grossing movies of all time? movie slider
+
             SizedBox(
               child: FutureBuilder(
                 future: widget.childrenFriendly,
@@ -91,6 +98,8 @@ class MoviesAndTvShowsState extends State<MoviesAndTvShows>
                 },
               ),
             ),
+            //Children-friendly movie slider
+
             SizedBox(
               child: FutureBuilder(
                 future: widget.onTv,
@@ -105,6 +114,7 @@ class MoviesAndTvShowsState extends State<MoviesAndTvShows>
                 },
               ),
             ),
+            //What's on TV tonight? movie slider
           ],
         ),
       )
