@@ -64,7 +64,6 @@ class WatchListCategoryScreenState extends State<WatchListCategoryScreen>
                   ("Watch List"),
                   style: GoogleFonts.aBeeZee(
                   fontSize: 20,
-                  decoration: TextDecoration.underline,
                   fontWeight: FontWeight.bold,
                   color:const Color.fromRGBO(253, 203, 74, 1.0),
                   ),
@@ -105,7 +104,6 @@ class WatchListCategoryScreenState extends State<WatchListCategoryScreen>
             Expanded(
               child: Row(
                 children: [
-                  SizedBox(width: screenSize.width * 0.1),
                   Expanded(
                     child: ListView.builder(
                       itemCount: widget.watchList.length,
@@ -115,79 +113,91 @@ class WatchListCategoryScreenState extends State<WatchListCategoryScreen>
                         Movie movie = widget.watchList[index];
                         return GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MoviesDetailsScreen(movie: movie),
-                              ),
-                            );
+                            String type = "movie";
+                            Navigator.push(context, MaterialPageRoute(builder: ((context) => MoviesDetailsScreen(movie: movie, type: type,))));
                           },
-                          child: Container(
-                            margin: EdgeInsets.only(top: 8, bottom: 8, right: screenSize.width*0.1),
-                            height: 150,
-                            width: screenSize.width * 0.8,
-                            decoration: const BoxDecoration(
-                              color: const Color.fromRGBO(253, 203, 74, 1.0),
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 125,
-                                  decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                        'https://image.tmdb.org/t/p/w500${movie.posterPath}',
+                          //Navigates to selected movie's detail screen
+
+                          child: FractionallySizedBox(
+                            widthFactor: 0.85,
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 8, bottom: 8),
+                              height: 190,
+                              width: screenSize.width * 0.75,
+                              decoration: const BoxDecoration(
+                                color: Color.fromRGBO(253, 203, 74, 1.0),
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                              ),
+                              //Box with Yellow background
+                          
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 125,
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                      image: DecorationImage(
+                                        image: NetworkImage(
+                                          'https://image.tmdb.org/t/p/w500${movie.posterPath}',
+                                        ),
+                                        fit: BoxFit.fill,
                                       ),
-                                      fit: BoxFit.fill,
                                     ),
                                   ),
-                                ),
-                                const SizedBox(width: 20),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          height: 32,
-                                          width: screenSize.width*0.45,
-                                          child: Text(
-                                            "${index+1}. ${movie.title}",
-                                            style: const TextStyle(color: Colors.black,decoration: TextDecoration.underline, fontWeight: FontWeight.bold,fontSize: 14),
+                                  //Movie Poster
+                          
+                                  const SizedBox(width: 20),
+                          
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      child: Column(
+                                        //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            height: 32,
+                                            width: screenSize.width*0.45,
+                                            child: Text(
+                                              "${index+1}. ${movie.title}",
+                                              style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                            ),
                                           ),
-                                        ),
-                                        Container(
-                                          width: screenSize.width * 0.45,
-                                          height: 80,
-                                          child: Text(
-                                            "${croppedOverview(movie.overview)}",
-                                            style: TextStyle(color: Colors.black, fontSize: 14),
+                                          // Movie title and Search result number
+                          
+                                          Container(
+                                            width: screenSize.width * 0.45,
+                                            height: 110,
+                                            child: Text(
+                                              "${croppedOverview(movie.overview)}",
+                                              style: TextStyle(color: Colors.black),
+                                            ),
                                           ),
-                                        ),
-                                        Container(
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              const Icon(
-                                                Icons.star,
-                                                color: Colors.black,
-                                                size: 20,
-                                              ),
-                                              SizedBox(width: 5),
-                                              Text(
-                                                "${movie.voteAverage.toStringAsFixed(1)}/10",
-                                                style: TextStyle(color: Colors.black),
-                                              ),
-                                            ],
+                                          //Overview
+                          
+                                          Container(
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                const Icon(
+                                                  Icons.star,
+                                                  color: Colors.black,
+                                                  size: 20,
+                                                ),
+                                                SizedBox(width: 5),
+                                                Text(
+                                                  "${movie.voteAverage.toStringAsFixed(1)}/10",
+                                                  style: TextStyle(color: Colors.black),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                          //Rating
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                )
-                              ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         );

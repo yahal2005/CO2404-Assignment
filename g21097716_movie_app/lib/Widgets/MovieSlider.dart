@@ -19,19 +19,20 @@ class MovieSlider extends StatelessWidget
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 30),
-        Row(
-          children:[
-            SizedBox(width: screenSize.width*0.02),
-            Text(
+        
+        
+        Padding(
+          padding: EdgeInsets.only(left:screenSize.width*0.02),
+          child: FractionallySizedBox(
+            widthFactor: 0.8,
+            child: Text(
               (category),
               style: GoogleFonts.aBeeZee(
-              fontSize: 16,
-              decoration: TextDecoration.underline,
-              color:const Color.fromRGBO(253, 203, 74, 1.0),
+                fontWeight: FontWeight.bold,
+                color:const Color.fromRGBO(253, 203, 74, 1.0),
               ),
             ),
-            
-          ],
+          ),
         ),
 
         const SizedBox(height: 20),
@@ -48,7 +49,12 @@ class MovieSlider extends StatelessWidget
                 return GestureDetector(
                   onTap:()
                   {
-                    Navigator.push(context, MaterialPageRoute(builder: ((context) => MoviesDetailsScreen(movie: snapshot.data[itemIndex]))));
+                    String type = "movie";
+                    if (category == "What's on TV tonight?")
+                    {
+                      type = "TvShow";
+                    }
+                    Navigator.push(context, MaterialPageRoute(builder: ((context) => MoviesDetailsScreen(movie: snapshot.data[itemIndex], type: type,))));
                   },
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(

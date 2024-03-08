@@ -18,17 +18,19 @@ class CustomSearchBarState extends State<CustomSearchBar>
   var searchValue;
   bool isVisible = false;
   String dropdownValue = "Movie";
-  String filterDropdownValue = "None";
+  //String filterDropdownValue = "None";
 
   Future<void> getSearchResult(String searchValue) async {
     List<Movie> result;
     if (dropdownValue == "Movie")
     {
       result = await Api().searchListMovies(searchValue);
+      //if the search is based on movie title
     }
     else
     {
       result = await Api().searchListPerson(searchValue);
+      // if search is based on actor name
     }
     
     setState(() 
@@ -36,7 +38,22 @@ class CustomSearchBarState extends State<CustomSearchBar>
       searchResult = result;
     });
   }
+  // returns appropriate result based on the search
 
+  String croppedOverview(String Overview)
+  {
+    List<String> words = Overview.split(' ');
+    if (words.length <= 20)
+    {
+      return Overview;
+    }
+    else
+    {
+      List<String> croppedList = words.sublist(0, 20);
+      return '${croppedList.join(' ')}.....';
+    }
+  }
+  //Reducing the overview to 20 words
 
 
   @override
@@ -68,6 +85,7 @@ class CustomSearchBarState extends State<CustomSearchBar>
                             color: Colors.amber,
                           ),
                         ),
+                        //Displays Search
                         autofocus: false,
                         controller: searchText,
                         onChanged: (value) 
@@ -101,30 +119,35 @@ class CustomSearchBarState extends State<CustomSearchBar>
                     ),
                   ),
 
-                  Container(
-                    child: DropdownButton(
-                      items: const[
-                        DropdownMenuItem(child: Text("Movie Name"), value: "Movie"),
-                        DropdownMenuItem(child: Text("Actor Name"), value: "Actor"),
-                      ],
-                      onChanged: (String? newValue){
-                        setState(() {
-                          dropdownValue = newValue!;
-                        });
-                        if (searchValue != null && searchValue.length == 0)
-                        {
-                          setState(() 
-                          {
-                            searchResult = [];
+                  Flexible(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: DropdownButton(
+                        items: const[
+                          DropdownMenuItem(child: Text("Movie Name"), value: "Movie"),
+                          DropdownMenuItem(child: Text("Actor Name"), value: "Actor"),
+                        ],
+                        onChanged: (String? newValue){
+                          setState(() {
+                            dropdownValue = newValue!;
                           });
-                        } else if (searchValue != null && searchValue.length > 2)
-                        {
-                          getSearchResult(searchValue);
-                        }
-                      },
-                      value: dropdownValue,
-                    )
+                          if (searchValue != null && searchValue.length == 0)
+                          {
+                            setState(() 
+                            {
+                              searchResult = [];
+                            });
+                          } 
+                          else if (searchValue != null && searchValue.length > 2)
+                          {
+                            getSearchResult(searchValue);
+                          }
+                        },
+                        value: dropdownValue,
+                      )
+                    ),
                   ),
+                  //Dropdown to search based on actor name or movie title
 
 
                   /*IconButton(
@@ -206,13 +229,14 @@ class CustomSearchBarState extends State<CustomSearchBar>
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MoviesDetailsScreen(movie: searchResult[index]),
+                          builder: (context) => MoviesDetailsScreen(movie: searchResult[index],type: "movie",),
                         ),
                       );
+                      //Navigates to the specific movie's detail screen
                     },
                     child: Container(
                       margin: const EdgeInsets.only(top: 8, bottom: 8),
-                      height: 150,
+                      height: 190,
                       width: screenSize.width,
                       decoration: const BoxDecoration(
                         color: Colors.black,
@@ -233,21 +257,36 @@ class CustomSearchBarState extends State<CustomSearchBar>
                               ),
                             ),
                           ),
-                          const SizedBox(width: 20),
+                          //Movie Poster
+
+                          SizedBox(width: screenSize.width*0.05),
+
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
                               child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
-                                    width: screenSize.width * 0.4,
-                                    height: 85,
+                                    width: screenSize.width*0.4,
+                                    height: 20,
                                     child: Text(
-                                      searchResult[index].overview,
+                                      searchResult[index].title
                                     ),
                                   ),
+                                  //Title
+
+                                  const SizedBox(height: 5,),
+
+                                  Container(
+                                    width: screenSize.width * 0.4,
+                                    height: 110,
+                                    child: Text(
+                                      croppedOverview(searchResult[index].overview),
+                                    ),
+                                  ),
+                                  //Overview
+
                                   Container(
                                     child: Center(
                                       child: Row(
@@ -267,6 +306,7 @@ class CustomSearchBarState extends State<CustomSearchBar>
                                       ),
                                     ),
                                   ),
+                                  //Rating
                                 ],
                               ),
                             ),
@@ -274,10 +314,13 @@ class CustomSearchBarState extends State<CustomSearchBar>
                         ],
                       ),
                     ),
+                    //Specifications for an individual movie
                   );
                 },
               ),
             ),
+            // Shows all the search results
+
           if (searchResult.isEmpty && searchValue != null && searchValue.length > 2)
             Container(
               margin: const EdgeInsets.only(top: 16),

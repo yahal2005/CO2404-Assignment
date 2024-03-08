@@ -12,13 +12,14 @@ import 'package:cinematic_insights/Network/dependency_injection.dart';
 
 class MoviesDetailsScreen extends StatefulWidget 
 {
-  const MoviesDetailsScreen({super.key, required this.movie});
+  const MoviesDetailsScreen({super.key, required this.movie, required this.type});
   final Movie movie;
-  State<MoviesDetailsScreen> createState() => _DetailsScreenState();
+  final String type;
+  State<MoviesDetailsScreen> createState() => DetailsScreenState();
 }
 
 
-class _DetailsScreenState extends State<MoviesDetailsScreen> 
+class DetailsScreenState extends State<MoviesDetailsScreen> 
 {
   late Future<List<Genre>> AvailableGenre;
   
@@ -127,12 +128,11 @@ class _DetailsScreenState extends State<MoviesDetailsScreen>
                     child: Column(
                       children: [
                         Align(
-                          alignment:Alignment.centerLeft,
+                          alignment:Alignment.center,
                           child: Text(
                             widget.movie.title,
                             style: GoogleFonts.belleza(
                               fontSize: 35,
-                              decoration: TextDecoration.underline,
                               fontWeight: FontWeight.w600,
                               color: Color.fromRGBO(253, 203, 74, 1.0),
                             ),
@@ -247,71 +247,72 @@ class _DetailsScreenState extends State<MoviesDetailsScreen>
             child: Column(
               //crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                FutureBuilder(
-                  future: checkWatchList(widget.movie.movieID), 
-                  builder: (context,snapshot)
-                  {
-                    if (snapshot.connectionState == ConnectionState.waiting)
+                if (widget.type == "movie")
+                  FutureBuilder(
+                    future: checkWatchList(widget.movie.movieID), 
+                    builder: (context,snapshot)
                     {
-                      return Container();
-                    }
-                    else if (snapshot.hasError)
-                    {
-                      return Text("${snapshot.error}");
-                    }
-                    else
-                    {
-                      bool isOnWatchList = snapshot.data ?? false;
-                      return SizedBox(
-                        width: screenSize.width*0.75,
-                        child: ElevatedButton.icon(
-                          icon: Icon(
-                            isOnWatchList ? Icons.remove : Icons.add,
-                            color: Colours.scaffoldBgColor,
-                            size: 25,
-                          ),
-                          label: Text(
-                            isOnWatchList ? 'Remove from watchlist' : 'Add to watchlist',
-                            style: GoogleFonts.roboto(
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                      if (snapshot.connectionState == ConnectionState.waiting)
+                      {
+                        return Container();
+                      }
+                      else if (snapshot.hasError)
+                      {
+                        return Text("${snapshot.error}");
+                      }
+                      else
+                      {
+                        bool isOnWatchList = snapshot.data ?? false;
+                        return SizedBox(
+                          width: screenSize.width*0.75,
+                          child: ElevatedButton.icon(
+                            icon: Icon(
+                              isOnWatchList ? Icons.remove : Icons.add,
+                              color: Colours.scaffoldBgColor,
+                              size: 25,
                             ),
-                          ),
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              Color.fromRGBO(253, 203, 74, 1.0),
-                            ),
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
+                            label: Text(
+                              isOnWatchList ? 'Remove from watchlist' : 'Add to watchlist',
+                              style: GoogleFonts.roboto(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
                               ),
                             ),
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                Color.fromRGBO(253, 203, 74, 1.0),
+                              ),
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                              ),
+                            ),
+                            onPressed: ()
+                            {
+                              if (isOnWatchList == false)
+                              {
+                                addToWatchList(widget.movie.movieID);
+                              }
+                              else
+                              {
+                                removeFromWatchList(widget.movie.movieID);
+                              }
+                              setState(() {
+                                isOnWatchList = !isOnWatchList;
+                              });
+                            },
                           ),
-                          onPressed: ()
-                          {
-                            if (isOnWatchList == false)
-                            {
-                              addToWatchList(widget.movie.movieID);
-                            }
-                            else
-                            {
-                               removeFromWatchList(widget.movie.movieID);
-                            }
-                            setState(() {
-                              isOnWatchList = !isOnWatchList;
-                            });
-                          },
-                        ),
-                      );
+                        );
+                      }
                     }
-                  }
-                ),
-                
-                Container(
-                  height: 20, 
-                  color: Colors.black,
-                ),
+                  ),
+                  
+                  Container(
+                    height: 20, 
+                    color: Colors.black,
+                  ),
               ],
             ),
           ),

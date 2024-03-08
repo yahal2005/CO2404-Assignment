@@ -35,6 +35,8 @@ class CategoryScreenState extends State<CategoryScreen>
       return '${croppedList.join(' ')}.....';
     }
   }
+  //Reducing the overview to 20 words
+
 
   @override
   void initState() {
@@ -43,7 +45,7 @@ class CategoryScreenState extends State<CategoryScreen>
     allMoviesDisplayed = [];
     currentPage = 1;
     UpdateMovies();
-    DependencyInjection.init();
+    DependencyInjection.init(); //Checks network connectivity
     
     
     scrollController.addListener(() {
@@ -65,6 +67,7 @@ class CategoryScreenState extends State<CategoryScreen>
       // Handle error fetching more movies
     }
   }
+  //increments the current page as the user scrolls down and populates the movies list
 
   @override
   Widget build(BuildContext context) 
@@ -72,9 +75,11 @@ class CategoryScreenState extends State<CategoryScreen>
      final Size screenSize = MediaQuery.of(context).size;
      return Scaffold(
       appBar: AppBar(
-        leading: BackBtn(), 
+        leading: const BackBtn(), 
         backgroundColor: Colours.scaffoldBgColor,
       ),
+      // back button
+
       body: Column(
           children: [
             Image.asset(
@@ -84,7 +89,9 @@ class CategoryScreenState extends State<CategoryScreen>
               fit: BoxFit.contain,
               filterQuality: FilterQuality.high,
             ),
-            Divider (thickness: 0.5,color: Colors.white ),
+            //Logo
+
+            const Divider (thickness: 0.5,color: Colors.white ),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -93,53 +100,55 @@ class CategoryScreenState extends State<CategoryScreen>
                   (widget.category),
                   style: GoogleFonts.aBeeZee(
                   fontSize: 20,
-                  decoration: TextDecoration.underline,
                   fontWeight: FontWeight.bold,
                   color:const Color.fromRGBO(253, 203, 74, 1.0),
                   ),
                 ),
               ],
             ),
+            // Selected Category Title 
 
-            Divider (thickness: 0.5,color: Colors.white ),
+            const Divider (thickness: 0.5,color: Colors.white ),
 
-            if (widget.category == " Children-friendly movies")
-              Row(
-                children: [
-                  SizedBox (width: screenSize.width*0.1),
-                  Text(
-                    "Sort by     ",
-                    style: GoogleFonts.aBeeZee(
-                    fontSize: 15,
-                    color:Color.fromARGB(255, 252, 252, 252),
+            if (widget.category == "Children-friendly movies")
+              Padding(
+                padding: EdgeInsets.only(left:screenSize.width*0.075),
+                child: Row(
+                  children: [
+                    Text(
+                      "Sort by     ",
+                      style: GoogleFonts.aBeeZee(
+                      fontSize: 15,
+                      color:const Color.fromARGB(255, 252, 252, 252),
+                      ),
                     ),
-                  ),
-                  DropdownButton(
-                    items: const[
-                      DropdownMenuItem(child: Text("Alphabetical Order"), value: "Asc"),
-                      DropdownMenuItem(child: Text("Popularity Ascending"), value: "PopAsc"),
-                      DropdownMenuItem(child: Text("Popularity Descending"), value: "PopDesc")
-                    ],
-                    onChanged: (String? newValue){
-                      setState(() {
-                        dropdownValue = newValue!;
-                      });
-                      allMoviesDisplayed = [];
-                      currentPage = 1;
-                      UpdateMovies();
-
-                    },
-                    value: dropdownValue,
-                  )
-                ],
+                    DropdownButton(
+                      items: const[
+                        DropdownMenuItem(child: Text("Alphabetical Order"), value: "Asc"),
+                        DropdownMenuItem(child: Text("Popularity Ascending"), value: "PopAsc"),
+                        DropdownMenuItem(child: Text("Popularity Descending"), value: "PopDesc")
+                      ],
+                      onChanged: (String? newValue){
+                        setState(() {
+                          dropdownValue = newValue!;
+                        });
+                        allMoviesDisplayed = [];
+                        currentPage = 1;
+                        UpdateMovies();
+              
+                      },
+                      value: dropdownValue,
+                    )
+                  ],
+                ),
               ),
+              //Dropdown to filter the children friendly movies
 
             const SizedBox(height: 15),
 
             Expanded(
               child: Row(
                 children: [
-                  SizedBox(width: screenSize.width * 0.1),
                   Expanded(
                     child: ListView.builder(
                       controller: scrollController,
@@ -150,80 +159,95 @@ class CategoryScreenState extends State<CategoryScreen>
                         Movie movie = allMoviesDisplayed[index];
                         return GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MoviesDetailsScreen(movie: movie),
-                              ),
-                            );
+                            String type = "movie";
+                            if (widget.category == "What's on TV tonight?")
+                            {
+                              type = "TvShow";
+                            }
+                            Navigator.push(context, MaterialPageRoute(builder: ((context) => MoviesDetailsScreen(movie: movie, type: type,))));
                           },
-                          child: Container(
-                            margin: EdgeInsets.only(top: 8, bottom: 8, right: screenSize.width*0.1),
-                            height: 150,
-                            width: screenSize.width * 0.8,
-                            decoration: const BoxDecoration(
-                              color: const Color.fromRGBO(253, 203, 74, 1.0),
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 125,
-                                  decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                        'https://image.tmdb.org/t/p/w500${movie.posterPath}',
+                          //Navigates to selected movie's detail screen
+
+                          child: FractionallySizedBox(
+                            widthFactor: 0.85,
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 8, bottom: 8),
+                              height: 190,
+                              width: screenSize.width * 0.75,
+                              decoration: const BoxDecoration(
+                                color: Color.fromRGBO(253, 203, 74, 1.0),
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                              ),
+                              //Box with Yellow background
+                          
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 125,
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                      image: DecorationImage(
+                                        image: NetworkImage(
+                                          'https://image.tmdb.org/t/p/w500${movie.posterPath}',
+                                        ),
+                                        fit: BoxFit.fill,
                                       ),
-                                      fit: BoxFit.fill,
                                     ),
                                   ),
-                                ),
-                                const SizedBox(width: 20),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    child: Column(
-                                      //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          height: 32,
-                                          width: screenSize.width*0.45,
-                                          child: Text(
-                                            "${index+1}. ${movie.title}",
-                                            style: const TextStyle(color: Colors.black,decoration: TextDecoration.underline, fontWeight: FontWeight.bold,fontSize: 14),
+                                  //Movie Poster
+                          
+                                  const SizedBox(width: 20),
+                          
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      child: Column(
+                                        //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            height: 32,
+                                            width: screenSize.width*0.45,
+                                            child: Text(
+                                              "${index+1}. ${movie.title}",
+                                              style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                            ),
                                           ),
-                                        ),
-                                        Container(
-                                          width: screenSize.width * 0.45,
-                                          height: 80,
-                                          child: Text(
-                                            "${croppedOverview(movie.overview)}",
-                                            style: TextStyle(color: Colors.black, fontSize: 14),
+                                          // Movie title and Search result number
+                          
+                                          Container(
+                                            width: screenSize.width * 0.45,
+                                            height: 110,
+                                            child: Text(
+                                              "${croppedOverview(movie.overview)}",
+                                              style: TextStyle(color: Colors.black),
+                                            ),
                                           ),
-                                        ),
-                                        Container(
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              const Icon(
-                                                Icons.star,
-                                                color: Colors.black,
-                                                size: 20,
-                                              ),
-                                              SizedBox(width: 5),
-                                              Text(
-                                                "${movie.voteAverage.toStringAsFixed(1)}/10",
-                                                style: TextStyle(color: Colors.black),
-                                              ),
-                                            ],
+                                          //Overview
+                          
+                                          Container(
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                const Icon(
+                                                  Icons.star,
+                                                  color: Colors.black,
+                                                  size: 20,
+                                                ),
+                                                SizedBox(width: 5),
+                                                Text(
+                                                  "${movie.voteAverage.toStringAsFixed(1)}/10",
+                                                  style: TextStyle(color: Colors.black),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                          //Rating
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                )
-                              ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         );

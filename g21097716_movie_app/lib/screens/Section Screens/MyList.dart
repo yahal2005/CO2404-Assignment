@@ -54,7 +54,7 @@ class MyListState extends State<MyList>
         {
           if (snapshot.connectionState == ConnectionState.waiting) 
           {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(const Color.fromRGBO(253, 203, 74, 1.0))));
 
           } else if (snapshot.hasError) 
           {
@@ -82,7 +82,7 @@ class MyListState extends State<MyList>
                               "Watch List",
                               style: GoogleFonts.aBeeZee(
                                 fontSize: 20,
-                                decoration: TextDecoration.underline,
+                                fontWeight: FontWeight.bold,
                                 color: const Color.fromRGBO(253, 203, 74, 1.0),
                               ),
                             ),
@@ -108,6 +108,7 @@ class MyListState extends State<MyList>
                                             MaterialPageRoute(
                                               builder: (context) => MoviesDetailsScreen(
                                                 movie: watchList[itemIndex],
+                                                type: "movie",
                                               ),
                                             ),
                                           );

@@ -4,39 +4,41 @@ import 'package:cinematic_insights/Widgets/customSearchBar.dart';
 import 'package:cinematic_insights/screens/Section%20Screens/MoviesAndTVShows.dart';
 import 'package:cinematic_insights/screens/Section%20Screens/MyList.dart';
 import 'package:cinematic_insights/models/movieClass.dart';
-import 'package:cinematic_insights/api/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cinematic_insights/screens/login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key});
+  HomeScreen({
+    required this.currentlyPlaying,
+    required this.trendingYr,
+    required this.highestGrossing,
+    required this.childrenFriendly,
+    required this.onTv,
+  });
+
+  Future<List<Movie>> currentlyPlaying;
+  Future<List<Movie>> trendingYr;
+  Future<List<Movie>> highestGrossing;
+  Future<List<Movie>> childrenFriendly;
+  Future<List<Movie>> onTv;
+  
 
   @override
   HomeScreenState createState() => HomeScreenState();
 }
 
 class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  late Future<List<Movie>> currentlyPlaying;
-  late Future<List<Movie>> trendingYr;
-  late Future<List<Movie>> highestGrossing;
-  late Future<List<Movie>> childrenFriendly;
-  late Future<List<Movie>> onTv;
 
   @override
   void initState()
   {
     super.initState();
     initializeData();
-    DependencyInjection.init();
+    DependencyInjection.init(); //Checks for network connectivity
   }
 
   Future<void> initializeData() async 
   {
-    currentlyPlaying = Api().getCurrentlyPlaying();
-    trendingYr = Api().getPopular();
-    highestGrossing = Api().getHighestGrossing();
-    childrenFriendly = Api().getChildrenFriendly();
-    onTv = Api().getOnTv();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('Logged', true);
   }
@@ -46,9 +48,16 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('Logged', false);
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => LoginScreen()),
+      MaterialPageRoute(builder: (context) => LoginScreen(
+        currentlyPlaying: widget.currentlyPlaying,
+        trendingYr: widget.trendingYr,
+        highestGrossing: widget.highestGrossing,
+        childrenFriendly: widget.childrenFriendly,
+        onTv: widget.onTv,
+      )),
     );
-  }
+  } 
+  // To Logout
 
   @override
   Widget build(BuildContext context) 
@@ -77,8 +86,8 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             Align(
               alignment: Alignment.bottomCenter,
               child: ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-                title: Text(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                title: const Text(
                   'Logout',
                   textAlign: TextAlign.center,
                 ),
@@ -90,7 +99,9 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ],
         ),
-      ),
+      ), 
+      //Menu which directs to the Logout
+
       body: ListView(
         children: [
           SizedBox(
@@ -102,28 +113,32 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               filterQuality: FilterQuality.high,
             ),
           ),
+          // Logo
+
           Padding(
             padding: EdgeInsets.fromLTRB(
               0.125 * screenSize.width,
               0,
-              0.125 * screenSize.width,
+              0,
               0.03 * screenSize.height,
             ),
             child: const CustomSearchBar(),
           ),
+
           SizedBox(
             height: screenSize.height * 0.05,
             width: screenSize.width * 1,
             child: TabBar(
               labelColor: Colors.white,
               unselectedLabelColor: Colors.grey,
-              indicator: BoxDecoration(
+              indicator: const  BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
                     color: Color.fromRGBO(253, 203, 74, 1.0),
                     width: 4.0,
                   ),
                 ),
+                // Border to show the currently selected option
               ),
               controller: tabController,
               tabs: [
@@ -132,6 +147,8 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ],
             ),
           ),
+          // TapBar with Options ("Movies & Tv shows", "My-List")
+
           SizedBox(
             height: screenSize.height * 0.5,
             width: screenSize.width,
@@ -139,13 +156,16 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               controller: tabController,
               children: [
                 MoviesAndTvShows(
-                  currentlyPlaying: currentlyPlaying,
-                  trendingYr: trendingYr,
-                  highestGrossing: highestGrossing,
-                  childrenFriendly: childrenFriendly,
-                  onTv: onTv,
+                  currentlyPlaying: widget.currentlyPlaying,
+                  trendingYr: widget.trendingYr,
+                  highestGrossing: widget.highestGrossing,
+                  childrenFriendly: widget.childrenFriendly,
+                  onTv: widget.onTv,
                 ),
+                // Contains the categorised movies and tv shows
+
                 MyList(),
+                //Contains the Watch-List
               ],
             ),
           ),
