@@ -1,7 +1,9 @@
 import 'package:cinematic_insights/colors.dart';
 import 'package:cinematic_insights/Widgets/back_button.dart';
 import 'package:cinematic_insights/models/genreClass.dart';
+import 'package:cinematic_insights/models/personClass.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cinematic_insights/models/movieClass.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,23 +25,29 @@ class MoviesDetailsScreen extends StatefulWidget
 class DetailsScreenState extends State<MoviesDetailsScreen> 
 {
   late Future<List<Genre>> availableGenre;
-  
+  late Future<List<Person>> crew;
+  late User user;
+  String email = '';
   @override
   void initState() {
     super.initState();
     initializeData(); 
+    user = FirebaseAuth.instance.currentUser!;
+    email = user.email ?? '';
     DependencyInjection.init();
   }
 
+
   Future<void> initializeData() async {
     availableGenre = Api().getGenres();
+    crew = Api().getMovieCast((widget.movie.movieID).toString());
   }
   //gets all the genres
    
   Future<List<int>> getWatchList() async 
   {
     try {
-      CollectionReference watchListRef = FirebaseFirestore.instance.collection('WatchList');
+      CollectionReference watchListRef = FirebaseFirestore.instance.collection('WatchList${email}');
 
       QuerySnapshot querySnapshot = await watchListRef.get();
 
@@ -101,7 +109,7 @@ class DetailsScreenState extends State<MoviesDetailsScreen>
 
   Future addToWatchList(int Id) async
   {
-    await FirebaseFirestore.instance.collection('WatchList').doc(Id.toString()).set({
+    await FirebaseFirestore.instance.collection('WatchList${email}').doc(Id.toString()).set({
       'ID': Id,
     });
   }
@@ -109,9 +117,56 @@ class DetailsScreenState extends State<MoviesDetailsScreen>
 
   Future removeFromWatchList(int Id) async
   {
-    await FirebaseFirestore.instance.collection('WatchList').doc(Id.toString()).delete();
+    await FirebaseFirestore.instance.collection('WatchList${email}').doc(Id.toString()).delete();
   }
   //Remove from watchlist in the firebase
+
+  Widget TopCastSlider() {
+    return FutureBuilder<List<Person>>(
+      future: crew,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color.fromRGBO(253, 203, 74, 1.0))); // Show a loading indicator while data is being fetched
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else if (snapshot.hasData) {
+          List<Person> topCast = snapshot.data!;
+          return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: topCast.length > 15 ? 15 : topCast.length,
+            itemBuilder: (context, index) {
+              Person person = topCast[index];
+              return Row(
+                children: [
+                  Column(
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: Color.fromRGBO(253, 203, 74, 1.0),
+                        backgroundImage: person.profilePath.isNotEmpty
+                         ?NetworkImage("https://image.tmdb.org/t/p/w500${person.profilePath}")
+                         : NetworkImage("https://media.istockphoto.com/id/1208175274/vector/avatar-vector-icon-simple-element-illustrationavatar-vector-icon-material-concept-vector.jpg?s=612x612&w=0&k=20&c=t4aK_TKnYaGQcPAC5Zyh46qqAtuoPcb-mjtQax3_9Xc="),
+                        radius: 65,
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        person.name,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
+                  SizedBox(width:40),
+                ],
+              );
+            },
+          );
+        } else {
+          return Text('No data available');
+        }
+      },
+    );
+  }
+  //Actors
 
   @override
   Widget build(BuildContext context) 
@@ -123,11 +178,28 @@ class DetailsScreenState extends State<MoviesDetailsScreen>
         children: [
           CustomScrollView(
             slivers: [
-              const SliverAppBar(
+              SliverAppBar(
                 leading: BackBtn(),
                 backgroundColor: Colours.scaffoldBgColor,
                 pinned: true,
                 floating: true,
+                title: Row(
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          widget.movie.title,
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.belleza(
+                            fontSize: 35,
+                            fontWeight: FontWeight.w600,
+                            color: Color.fromRGBO(253, 203, 74, 1.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               SliverList(
                 delegate: SliverChildListDelegate([
@@ -135,18 +207,6 @@ class DetailsScreenState extends State<MoviesDetailsScreen>
                     padding: const EdgeInsets.fromLTRB(72, 0, 72, 72),
                     child: Column(
                       children: [
-                        Align(
-                          alignment:Alignment.center,
-                          child: Text(
-                            widget.movie.title,
-                            style: GoogleFonts.belleza(
-                              fontSize: 35,
-                              fontWeight: FontWeight.w600,
-                              color: Color.fromRGBO(253, 203, 74, 1.0),
-                            ),
-                          ),
-                        ),
-                        //Movie Title
 
                         const SizedBox(height: 30),
 
@@ -173,7 +233,7 @@ class DetailsScreenState extends State<MoviesDetailsScreen>
                             builder: (context, snapshot) {
                               if (snapshot.data == null)
                               {
-                                return CircularProgressIndicator();
+                                return CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color.fromRGBO(253, 203, 74, 1.0)));
                               }
                               else
                               {
@@ -246,6 +306,32 @@ class DetailsScreenState extends State<MoviesDetailsScreen>
                           ),
                         ),
                         //Release date
+
+                        const SizedBox(height: 20),
+
+                        if (widget.type == "movie")
+
+                          Align(
+                            alignment:Alignment.centerLeft, 
+                            child: Text(
+                              'Top Cast',
+                              style: GoogleFonts.roboto(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 15),
+
+                        if (widget.type == "movie")
+
+                          Container(
+                            height: 200,
+                            child: TopCastSlider(),
+                          )
+                          //Calling Actors
+
                       ],
                     ),
                   ),

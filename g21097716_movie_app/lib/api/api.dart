@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:cinematic_insights/models/genreClass.dart';
 import 'package:cinematic_insights/models/movieClass.dart';
+import 'package:cinematic_insights/models/personClass.dart';
 import 'package:http/http.dart' as http;
 
 class Api
@@ -15,7 +16,6 @@ class Api
   static const movieGenresUrl = 'https://api.themoviedb.org/3/genre/movie/list$apiKey';
   static const searchMovieUrl = 'https://api.themoviedb.org/3/search/movie$apiKey';
   static const searchPersonUrl = 'https://api.themoviedb.org/3/search/person$apiKey';
-
 
 
 
@@ -228,6 +228,19 @@ class Api
     else
     {
       throw Exception('Details Not Found');
+    }
+  }
+
+  Future<List<Person>> getMovieCast(String movieID) async {
+    final response = await http.get(Uri.parse('$movieDetailUrl$movieID/credits$apiKey'));
+    if(response.statusCode == 200)
+    {
+      final decodedData = json.decode(response.body)['cast'] as List;
+      return decodedData.map((json) => Person.fromJson(json)).toList();
+    }
+    else
+    {
+      throw Exception("Something happened");
     }
   }
 

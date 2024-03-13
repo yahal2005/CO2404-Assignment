@@ -2,7 +2,7 @@
 import 'package:cinematic_insights/api/api.dart';
 import 'package:cinematic_insights/models/movieClass.dart';
 import 'package:cinematic_insights/screens/home_screen.dart';
-import 'package:cinematic_insights/screens/login_screen.dart';
+import 'package:cinematic_insights/screens/LoginScreens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';

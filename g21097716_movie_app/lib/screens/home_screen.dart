@@ -6,7 +6,7 @@ import 'package:cinematic_insights/screens/Section%20Screens/MoviesAndTVShows.da
 import 'package:cinematic_insights/screens/Section%20Screens/MyList.dart';
 import 'package:cinematic_insights/models/movieClass.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:cinematic_insights/screens/login_screen.dart';
+import 'package:cinematic_insights/screens/LoginScreens/login_screen.dart';
 
 // ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {

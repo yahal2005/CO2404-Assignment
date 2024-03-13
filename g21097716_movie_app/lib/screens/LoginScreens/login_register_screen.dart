@@ -1,15 +1,18 @@
 import 'package:cinematic_insights/Widgets/customTextField.dart';
 import 'package:cinematic_insights/colors.dart';
+import 'package:cinematic_insights/models/authenticationClass.dart';
 import 'package:cinematic_insights/models/movieClass.dart';
 import 'package:cinematic_insights/screens/home_screen.dart';
+import 'package:cinematic_insights/screens/LoginScreens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cinematic_insights/Network/dependency_injection.dart';
 
 // ignore: must_be_immutable
-class LoginScreen extends StatefulWidget
+class loginRegisterPage extends StatefulWidget
 {
-  LoginScreen({
+  loginRegisterPage({
+    super.key,
     required this.currentlyPlaying,
     required this.trendingYr,
     required this.highestGrossing,
@@ -23,22 +26,22 @@ class LoginScreen extends StatefulWidget
   Future<List<Movie>> childrenFriendly;
   Future<List<Movie>> onTv;
 
-
-
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<loginRegisterPage> createState() => loginRegisterState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class loginRegisterState extends State<loginRegisterPage>
+{
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmedPasswordController = TextEditingController();
 
   void initState() {
     super.initState(); 
     DependencyInjection.init();
   }
 
-  void SignUserIn(BuildContext context) async
+  void SignUserUp(BuildContext context) async
   {
     showDialog(
       context: context,
@@ -51,22 +54,30 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     );
     try{
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text, 
-        password: passwordController.text,
-      );
-      Navigator.pop(context);
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => HomeScreen(
-          currentlyPlaying: widget.currentlyPlaying,
-          trendingYr: widget.trendingYr,
-          highestGrossing: widget.highestGrossing,
-          childrenFriendly: widget.childrenFriendly,
-          onTv: widget.onTv,
+      if (passwordController.text == confirmedPasswordController.text)
+      {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text, 
+          password: passwordController.text,
+        );
+        Navigator.pop(context);
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => HomeScreen(
+            currentlyPlaying: widget.currentlyPlaying,
+            trendingYr: widget.trendingYr,
+            highestGrossing: widget.highestGrossing,
+            childrenFriendly: widget.childrenFriendly,
+            onTv: widget.onTv,
 
-        )),
-      );
-      //If email and password are valid
+          )),
+        );
+        //If passwords match 
+      }
+      else
+      {
+        errorMessage(context, "Passwords don't match!");
+      }
+      
     } 
     on FirebaseAuthException catch(error)
     {
@@ -84,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
         errorMessage(context,"Please enter a valid email address");
       }
     }
-    // If email or password is invalid
+    // If passwords do not match
   }
 
   void errorMessage (BuildContext context, String errorText)
@@ -114,6 +125,9 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+
+                SizedBox(height:screenSize.height*0.05),
+
                 Image.asset(
                   "assets/logo.png",
                   width: screenSize.width * 0.78,
@@ -126,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 25),
       
                 const Text(
-                  'Login',
+                  'Register',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 30,
@@ -137,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 20),
       
                 const Text(
-                  'Sign in to continue',
+                  "Let's create an account for you",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16
@@ -161,11 +175,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   obscureText: true,
                 ),
                 //Text Field to enter the password
+
+                const SizedBox(height: 10),
+      
+                CustomTextField(
+                  controller: confirmedPasswordController,
+                  hintText: "Confirm Password",
+                  obscureText: true,
+                ),
+                //Text Field to confirm the password
       
                 const SizedBox(height: 20),
       
                 GestureDetector(
-                  onTap: () => SignUserIn(context),
+                  onTap: () => SignUserUp(context),
                   child: Container(
                     height: 40,
                     width: 250,
@@ -177,7 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     child: const Center(
                       child: Text(
-                        "Sign In",
+                        "Sign Up",
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
@@ -186,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     )
                   ),
                 ),
-                //Sign In button
+                //Sign Up button
       
                 SizedBox(height: screenSize.height*0.05),
       
@@ -218,19 +241,48 @@ class _LoginScreenState extends State<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children:[
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white),
-                        borderRadius: BorderRadius.circular(16),
-                        color: Colors.grey[200],
+                    GestureDetector(
+                      onTap: () => AuthService().signInWithGoogle(),
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white),
+                          borderRadius: BorderRadius.circular(16),
+                          color: Colors.grey[200],
+                        ),
+                        child: Image.asset("assets/googleIcon.jpg", height: 40), 
                       ),
-                      child: Image.asset("assets/googleIcon.jpg", height: 40), 
                     ),
                     //Google Sign In button
                   ] 
+                ),
+
+                SizedBox(height: screenSize.height*0.05),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Already have an account?',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    const SizedBox(width:4),
+                    GestureDetector(
+                      onTap: ()
+                      {
+                        Navigator.push(context, MaterialPageRoute(builder: ((context) => LoginScreen(currentlyPlaying: widget.currentlyPlaying,trendingYr: widget.trendingYr,highestGrossing: widget.highestGrossing,childrenFriendly: widget.childrenFriendly,onTv: widget.onTv))));
+                      },
+                      child: const Text(
+                        'Login now',
+                        style : TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        )
+                      ),
+                    )
+                  ],
+                  //Back to login page
                 )
-      
               ],),
           ),
         ),

@@ -18,7 +18,7 @@ class CustomSearchBarState extends State<CustomSearchBar>
   var searchValue;
   bool isVisible = false;
   String dropdownValue = "Movie";
-  //String filterDropdownValue = "None";
+  
 
   Future<void> getSearchResult(String searchValue) async {
     List<Movie> result;

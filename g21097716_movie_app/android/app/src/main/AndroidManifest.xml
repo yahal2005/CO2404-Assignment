@@ -19,6 +19,8 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -29,5 +31,10 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <meta-data
+              android:name="com.google.android.gms.auth.api.credentials.CLIENT_ID"
+              android:value="445356305682-k2p4qbdl0qca4utr7p09i84h6uiq4utu.apps.googleusercontent.com"
+             />
     </application>
 </manifest>

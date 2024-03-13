@@ -3,6 +3,7 @@ import 'package:cinematic_insights/models/movieClass.dart';
 import 'package:cinematic_insights/screens/movie_details_screen.dart';
 import 'package:cinematic_insights/screens/watchlist_category_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -17,8 +18,10 @@ class MyList extends StatefulWidget
 
 Future<List<Movie>> getWatchList() async 
 {
+  User user = FirebaseAuth.instance.currentUser!;
+  String email = user.email ?? '';
   try {
-    CollectionReference watchListRef = FirebaseFirestore.instance.collection('WatchList');
+    CollectionReference watchListRef = FirebaseFirestore.instance.collection('WatchList${email}');
 
     QuerySnapshot querySnapshot = await watchListRef.get();
 
