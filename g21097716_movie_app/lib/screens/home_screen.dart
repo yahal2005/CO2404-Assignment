@@ -95,27 +95,39 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ],
       ),
       drawer: Drawer(
-        width: screenSize.width * 0.25,
+        width: screenSize.width * 0.35,
         child: Column(
           children: [
             SizedBox(height: screenSize.height * 0.9),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
-                title: const Text(
-                  'Logout',
-                  textAlign: TextAlign.center,
+            Row(
+              children: [
+                Expanded(
+                  child: ListTile(
+                    contentPadding: EdgeInsets.only(left: screenSize.width * 0.0175),
+                    title: const Text(
+                      'Logout',
+                      textAlign: TextAlign.center,
+                    ),
+                    onTap: () {
+                      loggedOut(context);
+                    },
+                  ),
                 ),
-                onTap: () 
-                {
-                  loggedOut(context);
-                },
-              ),
+                SizedBox(width: 1),
+                CircleAvatar(
+                  radius: 20,
+                  backgroundColor: Colors.black,
+                  child: Icon(
+                    Icons.person,
+                    size: 25,
+                    color: Colors.white,
+                  ),
+                )
+              ],
             ),
           ],
         ),
-      ), 
+      ),
       //Menu which directs to the Logout
 
       body: ListView(

@@ -9,6 +9,7 @@ import 'package:cinematic_insights/models/movieClass.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cinematic_insights/api/api.dart';
 import 'package:cinematic_insights/Network/dependency_injection.dart';
+import 'package:share_plus/share_plus.dart';
 
 
 
@@ -191,7 +192,6 @@ class DetailsScreenState extends State<MoviesDetailsScreen>
                           widget.movie.title,
                           textAlign: TextAlign.center,
                           style: GoogleFonts.belleza(
-                            fontSize: 35,
                             fontWeight: FontWeight.w600,
                             color: Color.fromRGBO(253, 203, 74, 1.0),
                           ),
@@ -200,27 +200,43 @@ class DetailsScreenState extends State<MoviesDetailsScreen>
                     ),
                   ],
                 ),
+                actions: [
+                  Padding(
+                    padding: EdgeInsets.only(right:screenSize.width*0.01),
+                    child: IconButton(
+                      icon: Icon(Icons.share) ,
+                      onPressed: () async
+                      {
+                        await Share.share("https://www.themoviedb.org/movie/${widget.movie.movieID}");
+                      },
+                    ),
+                  )
+
+                ],
               ),
               SliverList(
                 delegate: SliverChildListDelegate([
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(72, 0, 72, 72),
+                    padding: EdgeInsets.fromLTRB(screenSize.width*0.01, 0, screenSize.width*0.01,screenSize.height*0.1),
                     child: Column(
                       children: [
 
                         const SizedBox(height: 30),
 
-                        SizedBox(
-                          height: screenSize.height * 0.4,
-                          child: ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(24),
-                              bottomRight: Radius.circular(24),
-                            ),
-                            child: Image.network(
-                              'https://image.tmdb.org/t/p/w500${widget.movie.posterPath}',
-                              filterQuality: FilterQuality.high,
-                              fit: BoxFit.contain,
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(67,0,72,52),
+                          child: SizedBox(
+                            height: screenSize.height * 0.4,
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(24),
+                                bottomRight: Radius.circular(24),
+                              ),
+                              child: Image.network(
+                                'https://image.tmdb.org/t/p/w500${widget.movie.posterPath}',
+                                filterQuality: FilterQuality.high,
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           ),
                         ),

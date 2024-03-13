@@ -27,6 +27,7 @@ dependencies:
   cloud_firestore: ^4.14.0
   firebase_storage: ^11.1.0
   google_sign_in: ^6.1.6
+  share_plus: ^2.1.4
 
 
 
