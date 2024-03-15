@@ -116,11 +116,11 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 SizedBox(width: 1),
                 CircleAvatar(
                   radius: 20,
-                  backgroundColor: Colors.black,
+                  backgroundColor: Colors.white,
                   child: Icon(
                     Icons.person,
                     size: 25,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 )
               ],

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cinematic_insights/Network/dependency_injection.dart';
 
+
 class CategoryScreen extends StatefulWidget {
   final String category; 
   const CategoryScreen({super.key, required this.category});
@@ -21,6 +22,7 @@ class CategoryScreenState extends State<CategoryScreen>
   late int currentPage;
   late TextEditingController searchController;
   String dropdownValue = "Asc";
+
 
   String croppedOverview(String overview)
   {
